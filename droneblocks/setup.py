@@ -22,6 +22,7 @@ setup(
         'console_scripts': [
             'talker = droneblocks.publisher:main',
             'listener = droneblocks.subscriber:main',
+            'droneblocks = droneblocks.blocks:main'
         ],
     },
 )
