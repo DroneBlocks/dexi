@@ -26,9 +26,15 @@ find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Prompt.msg"
-  "srv/SetLedEffect.srv"
+  "msg/State.msg"
+  "srv/GetTelemetry.srv"
   "srv/Load.srv"
+  "srv/Navigate.srv"
   "srv/Run.srv"
+  "srv/SetAltitude.srv"
+  "srv/SetLedEffect.srv"
+  "srv/SetPosition.srv"
+  "srv/SetYaw.srv"
   "srv/Store.srv"
 )
 
