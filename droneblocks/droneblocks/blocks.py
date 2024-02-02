@@ -46,19 +46,22 @@ class DroneBlocks(Node):
             depth=10
         )
 
-        stop = None
-        block = ''
-        published_block = None
-        running_lock = threading.Lock()
+        self.stop = None
+        self.block = ''
+        self.published_block = None
+        self.running_lock = threading.Lock()
 
-        running_pub = self.create_publisher(Bool, '~/running', qos_profile_1)
-        block_pub = self.create_publisher(String, '~/block', qos_profile_1)
-        print_pub = self.create_publisher(String, '~/print', qos_profile_10)
-        prompt_pub = self.create_publisher(Prompt, '~/prompt', qos_profile_10)
-        error_pub = self.create_publisher(String, '~/error', qos_profile_10)
-        running_pub.publish(Bool()) # sends false
+        self.running_pub = self.create_publisher(Bool, '~/running', qos_profile_1)
+        self.block_pub = self.create_publisher(String, '~/block', qos_profile_1)
+        self.print_pub = self.create_publisher(String, '~/print', qos_profile_10)
+        self.prompt_pub = self.create_publisher(Prompt, '~/prompt', qos_profile_10)
+        self.error_pub = self.create_publisher(String, '~/error', qos_profile_10)
+        self.running_pub.publish(Bool()) # sends false
 
-        #programs_path = self.get_parameter('~programs_dir', os.path.dirname(os.path.abspath(__file__)) + '/../programs')
+        self.declare_parameter('~/programs_dir', os.path.dirname(os.path.abspath(__file__)) + '/../programs')
+        self.programs_path = self.get_parameter('~/programs_dir').value
+
+        self.name_regexp = re.compile(r'^[a-zA-Z-_.]{0,20}$')
 
         # rclpy.Timer(rclpy.Duration(self.get_parameter('block_rate', 0.2)), self.publish_block)
 
@@ -75,11 +78,42 @@ class DroneBlocks(Node):
         response.message = 'Stop triggered'
         return response
 
+    # TODO: get programs/examples directory installed when building
     def load(self, request, response):
-        print('load')
+        response.names = []
+        response.programs = []
+        response.success = True
+        try:
+            print(self.programs_path)
+            for currentpath, folders, files in os.walk(self.programs_path):
+                for f in files:
+                    if not f.endswith('.xml'):
+                        continue
+                    filename = os.path.join(currentpath, f)
+                    response['names'].append(os.path.relpath(filename, self.programs_path))
+                    response['programs'].append(open(filename, 'r').read())
+            return response
+        except Exception as e:
+            self.get_logger().error(e)
+            response.message = str(e)
+            return response
 
     def store(self, request, response):
         print('store')
+        if not self.name_regexp.match(request.name):
+            return {'message': 'Bad program name'}
+
+        filename = os.path.abspath(os.path.join(self.programs_path, request.name))
+
+        try:
+            open(filename, 'w').write(request.program)
+            response.success = True
+            response.message = 'Stored to ' + filename
+            return response
+        except Exception as e:
+            self.get_logger().error(e)
+            # TODO: understand why the structure below maps to the Load service format and not the Store format
+            return {'names': [], 'programs': [], 'message': str(e)}
 
     def publish_block(self, event):
         if self.published_block != self.block:
