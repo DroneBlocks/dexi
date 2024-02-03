@@ -92,7 +92,7 @@ Mapping port 9090 for rosbridge websocket:
 
 - ros2 service call /droneblocks/run dexi_msgs/srv/Run "{code: 'mission code goes in here'}"
 - ros2 service call /droneblocks/stop std_srvs/srv/Trigger
-
+- ros2 service call /droneblocks/load dexi_msgs/srv/Load
 # nginx for DroneBlocks
 
 - docker run -it --rm -d -p 7777:80 --name droneblocks -v ${PWD}/droneblocks/www:/usr/share/nginx/html nginx

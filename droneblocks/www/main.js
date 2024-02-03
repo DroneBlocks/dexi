@@ -100,7 +100,7 @@ function update() {
 
 var shownPrompts = new Set();
 
-new ROSLIB.Topic({ ros: ros.ros, name: ros.priv + 'prompt', messageType: 'droneblocks/Prompt' }).subscribe(function (msg) {
+new ROSLIB.Topic({ ros: ros.ros, name: ros.priv + 'prompt', messageType: 'dexi_msgs/Prompt' }).subscribe(function (msg) {
 	if (shownPrompts.has(msg.id)) return;
 	shownPrompts.add(msg.id);
 
@@ -188,7 +188,9 @@ function loadWorkspace() {
 loadWorkspace();
 
 function loadPrograms() {
+	console.log(ros.loadService);
 	ros.loadService.callService(new ROSLIB.ServiceRequest(), function (res) {
+		console.log('here');
 		if (!res.success) alert(res.message);
 
 		for (let i = 0; i < res.names.length; i++) {

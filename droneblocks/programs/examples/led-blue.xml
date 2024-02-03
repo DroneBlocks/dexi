@@ -1,0 +1,14 @@
+<xml xmlns="https://developers.google.com/blockly/xml">
+  <block type="set_led">
+    <value name="INDEX">
+      <shadow type="math_number">
+        <field name="NUM">0</field>
+      </shadow>
+    </value>
+    <value name="COLOR">
+      <shadow type="colour_picker">
+        <field name="COLOUR">#3333ff</field>
+      </shadow>
+    </value>
+  </block>
+</xml>
