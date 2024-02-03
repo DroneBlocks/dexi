@@ -190,7 +190,6 @@ loadWorkspace();
 function loadPrograms() {
 	console.log(ros.loadService);
 	ros.loadService.callService(new ROSLIB.ServiceRequest(), function (res) {
-		console.log('here');
 		if (!res.success) alert(res.message);
 
 		for (let i = 0; i < res.names.length; i++) {

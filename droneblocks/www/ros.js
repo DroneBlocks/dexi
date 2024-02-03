@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2020 Copter Express Technologies
  *
- * Author: Oleg Kalachev <okalachev@gmail.com>
+ * Author: Oleg Kalachev <okalachev@gmail.com>, Dennis Baldwin <db@droneblocks.io>
  *
  * Distributed under MIT License (available at https://opensource.org/licenses/MIT).
  * The above copyright notice and this permission notice shall be included in all
@@ -28,7 +28,7 @@ ros.on('error', function (err) {
 });
 
 export const namespace = '/';
-export const priv = namespace + 'droneblocks/';
+export const priv = namespace + 'droneblocks';
 
 export var params = {}; // parameters storage
 
@@ -44,7 +44,7 @@ export function readParam(name, fromUrl, _default) {
 			return;
 		}
 		// read from ROS params
-		new ROSLIB.Param({ ros: ros, name: priv + name }).get(function (val) {
+		new ROSLIB.Param({ ros: ros, name: priv + ':' + name }).get(function (val) {
 			if (val === null) {
 				if (_default === undefined) {
 					alert('Cannot read required parameter ' + name);
@@ -62,8 +62,8 @@ export function readParam(name, fromUrl, _default) {
 }
 
 
-export var runService = new ROSLIB.Service({ ros: ros, name: priv + 'run', serviceType: 'droneblocks/Run' });
-export var stopService = new ROSLIB.Service({ ros: ros, name: priv + 'stop', serviceType: 'std_srvs/Trigger' });
-export var loadService = new ROSLIB.Service({ ros: ros, name: priv + 'load', serviceType: 'droneblocks/Load' });
-export var storeService = new ROSLIB.Service({ ros: ros, name: priv + 'store', serviceType: 'droneblocks/Store' });
+export var runService = new ROSLIB.Service({ ros: ros, name: priv + '/run', serviceType: 'droneblocks/Run' });
+export var stopService = new ROSLIB.Service({ ros: ros, name: priv + '/stop', serviceType: 'std_srvs/Trigger' });
+export var loadService = new ROSLIB.Service({ ros: ros, name: priv + '/load', serviceType: 'droneblocks/Load' });
+export var storeService = new ROSLIB.Service({ ros: ros, name: priv + '/store', serviceType: 'droneblocks/Store' });
 export var landService = new ROSLIB.Service({ ros: ros, name: namespace + 'land', serviceType: 'std_srvs/Trigger' });
