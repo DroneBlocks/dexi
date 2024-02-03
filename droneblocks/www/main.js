@@ -61,13 +61,13 @@ workspace.addChangeListener(function (e) {
 var running = false;
 var runRequest = false;
 
-new ROSLIB.Topic({ ros: ros.ros, name: ros.priv + 'block', messageType: 'std_msgs/String' }).subscribe(function (msg) {
+new ROSLIB.Topic({ ros: ros.ros, name: ros.priv + '/block', messageType: 'std_msgs/String' }).subscribe(function (msg) {
 	workspace.highlightBlock(msg.data);
 	runRequest = false;
 	update();
 });
 
-new ROSLIB.Topic({ ros: ros.ros, name: ros.priv + 'running' }).subscribe(function (msg) {
+new ROSLIB.Topic({ ros: ros.ros, name: ros.priv + '/running' }).subscribe(function (msg) {
 	running = msg.data;
 	runRequest = false;
 	if (!running) {
@@ -80,14 +80,14 @@ var notifElem = document.getElementById('notifications');
 
 function z(n) { return (n < 10 ? '0' : '') + n; } // add leading zero
 
-new ROSLIB.Topic({ ros: ros.ros, name: ros.priv + 'print', messageType: 'std_msgs/String' }).subscribe(function (msg) {
+new ROSLIB.Topic({ ros: ros.ros, name: ros.priv + '/print', messageType: 'std_msgs/String' }).subscribe(function (msg) {
 	var d = new Date(); // TODO: use rosgraph_msgs/Log?
 	var timestamp = `${z(d.getHours())}:${z(d.getMinutes())}:${z(d.getSeconds())}`;
 	notifElem.innerHTML += `${timestamp}: ${msg.data}\n`;
 	notifElem.scrollTop = notifElem.scrollHeight;
 });
 
-new ROSLIB.Topic({ ros: ros.ros, name: ros.priv + 'error', messageType: 'std_msgs/String' }).subscribe(function (msg) {
+new ROSLIB.Topic({ ros: ros.ros, name: ros.priv + '/error', messageType: 'std_msgs/String' }).subscribe(function (msg) {
 	alert('Error: ' + msg.data);
 });
 
@@ -100,14 +100,14 @@ function update() {
 
 var shownPrompts = new Set();
 
-new ROSLIB.Topic({ ros: ros.ros, name: ros.priv + 'prompt', messageType: 'dexi_msgs/Prompt' }).subscribe(function (msg) {
+new ROSLIB.Topic({ ros: ros.ros, name: ros.priv + '/prompt', messageType: 'dexi_msgs/Prompt' }).subscribe(function (msg) {
 	if (shownPrompts.has(msg.id)) return;
 	shownPrompts.add(msg.id);
 
 	var response = prompt(msg.message);
 	new ROSLIB.Topic({
 		ros: ros.ros,
-		name: ros.priv + 'input/' + msg.id,
+		name: ros.priv + '/input/' + msg.id,
 		messageType: 'std_msgs/String',
 		latch: true
 	}).publish(new ROSLIB.Message({ data: response || '' }));
@@ -188,7 +188,6 @@ function loadWorkspace() {
 loadWorkspace();
 
 function loadPrograms() {
-	console.log(ros.loadService);
 	ros.loadService.callService(new ROSLIB.ServiceRequest(), function (res) {
 		if (!res.success) alert(res.message);
 
