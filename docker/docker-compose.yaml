@@ -1,0 +1,21 @@
+networks:
+  ros2-network:
+    driver: bridge
+
+services:
+  px4-sitl:
+    image: jonasvautherin/px4-gazebo-headless:1.14.0
+    container_name: 'px4-sitl'
+    tty: true
+    networks:
+      - ros2-network
+    command: 172.19.0.3 # This represents the IP of the dexi container TODO: find a better way
+
+  dexi:
+    image: osrf/ros:humble-desktop
+    container_name: 'dexi'
+    volumes:
+      - /home/db/_dev/dexi:/root/ros2_ws/src
+    tty: true
+    networks:
+      - ros2-network

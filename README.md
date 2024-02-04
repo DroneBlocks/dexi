@@ -61,6 +61,57 @@ ros2 pkg create dexi --dependencies rclcpp --build-type ament_cmake
 - source install/setup.bash
 - MicroXRCEAgent serial --dev /dev/ttyAMA0 -b 921600
 
+# MAVROS and SITL
+
+Run the following from your host machine in the docker directory. It will spin up PX4-SITL and a ROS Humble container for DEXI development. You will need to make sure PX4 SITL is configured to send packets to the DEXI container IP
+
+```
+docker-compose up
+```
+
+Alternatively, if you have a DEXI container already running you can find its IP address and then start SITL. You'll need to make sure to specify the IP of your DEXI container. You can find this by running:
+
+```
+docker inspect bridge
+```
+
+Find your DEXI IP and then run:
+
+```
+docker run --rm -it jonasvautherin/px4-gazebo-headless:1.14.0 172.17.0.2 <- This is your DEXI container IP
+```
+
+In your DEXI container make sure MAVROS is installed:
+
+```
+sudo apt install ros-humble-mavros
+```
+
+and make sure to update your px4.launch file in:
+
+```
+/opt/ros/humble/shared/mavros/launch/px4.launch
+```
+
+with:
+
+```
+<arg name="fcu_url" default="udp://:14540@:14540" />
+```
+
+Install the geographic lib dependencies:
+
+```
+./opt/ros/humble/lib/mavros/install_geographiclib_datasets.sh
+```
+
+Finally, test the node:
+
+```
+source /opt/ros/humble/setup.bash
+ros2 launch mavros px4.launch
+```
+
 # PX4 ROS Messages and ROS Com Example
 
 ### Build
