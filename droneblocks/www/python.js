@@ -139,7 +139,7 @@ function generateROSDefinitions() {
 }
 
 function initNode() {
-	Blockly.Python.definitions_['import_rospy'] = 'import rospy';
+	Blockly.Python.definitions_['import_rospy'] = 'import rclpy';
 	generateROSDefinitions();
 }
 
