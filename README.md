@@ -102,7 +102,7 @@ with:
 Install the geographic lib dependencies:
 
 ```
-./opt/ros/humble/lib/mavros/install_geographiclib_datasets.sh
+/opt/ros/humble/lib/mavros/install_geographiclib_datasets.sh
 ```
 
 Finally, test the node:
