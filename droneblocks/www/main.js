@@ -113,6 +113,14 @@ new ROSLIB.Topic({ ros: ros.ros, name: ros.priv + '/prompt', messageType: 'dexi_
 	}).publish(new ROSLIB.Message({ data: response || '' }));
 });
 
+new ROSLIB.Topic({ ros: ros.ros, name: '/mavros/state', messageType: 'mavros_msgs/State' }).subscribe(function (msg) {
+	document.getElementById("mavros-state").innerHTML = msg.mode;
+});
+
+new ROSLIB.Topic({ ros: ros.ros, name: '/mavros/battery', messageType: 'sensor_msgs/BatteryState' }).subscribe(function (msg) {
+	document.getElementById("mavros-battery").innerHTML = `Battery: ${parseInt(msg.percentage * 100)}% : ${msg.voltage}V`;
+});
+
 window.stopProgram = function () {
 	ros.stopService.callService(new ROSLIB.ServiceRequest(), function (res) {
 		if (!res.success) alert(res.message);

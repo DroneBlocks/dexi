@@ -2,16 +2,20 @@ import rclpy
 from rclpy.node import Node
 from mavros_msgs.msg import State
 
+
+STATE_QOS = rclpy.qos.QoSProfile(
+    depth=10, durability=rclpy.qos.QoSDurabilityPolicy.TRANSIENT_LOCAL
+)
+
 class Offboard(Node):
     
   def __init__(self):
       super().__init__('offboard_node')
       self.current_state = State()
-      self.state_sub = self.create_subscription(State, "mavros/state", self.state_cb, 10)
+      self.state_sub = self.create_subscription(State, "mavros/state", self.state_cb, STATE_QOS)
 
   def state_cb(self, msg):
-      self.get_logger().info(str(msg))
-      self.current_state
+      self.get_logger().info(str(msg.mode))
       self.current_state = msg
 
 def main(args=None):
