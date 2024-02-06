@@ -9,7 +9,7 @@ class BatteryNode(Node):
   def __init__(self):
       super().__init__('battery_state_node')
       self.current_battery = BatteryState()
-      self.state_sub = self.create_subscription(BatteryState, "/mavros/battery", self.state_cb, SENSOR_QOS)
+      self.state_sub = self.create_subscription(BatteryState, '/mavros/battery', self.state_cb, SENSOR_QOS)
 
   def state_cb(self, msg):
       self.get_logger().info(str(msg))

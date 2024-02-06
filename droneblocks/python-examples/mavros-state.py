@@ -10,9 +10,9 @@ STATE_QOS = rclpy.qos.QoSProfile(
 class Offboard(Node):
     
   def __init__(self):
-      super().__init__('offboard_node')
+      super().__init__('mavros_state_node')
       self.current_state = State()
-      self.state_sub = self.create_subscription(State, "mavros/state", self.state_cb, STATE_QOS)
+      self.state_sub = self.create_subscription(State, 'mavros/state', self.state_cb, STATE_QOS)
 
   def state_cb(self, msg):
       self.get_logger().info(str(msg.mode))
