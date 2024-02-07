@@ -56,7 +56,9 @@ class DroneBlocks(Node):
         self.print_pub = self.create_publisher(String, '~/print', qos_profile_10)
         self.prompt_pub = self.create_publisher(Prompt, '~/prompt', qos_profile_10)
         self.error_pub = self.create_publisher(String, '~/error', qos_profile_10)
-        self.running_pub.publish(Bool()) # sends false
+
+        self.is_mission_running = Bool() # False
+        self.running_pub.publish(self.is_mission_running)
 
         # TODO: somehow get the program path working where the .. causes problems with colcon build --symlink-install --packages-select droneblocks
         # self.declare_parameter('~/programs_dir', os.path.dirname(os.path.abspath(__file__)) + '../programs')
@@ -67,6 +69,27 @@ class DroneBlocks(Node):
         # rclpy.Timer(rclpy.Duration(self.get_parameter('block_rate', 0.2)), self.publish_block)
 
     def run2(self, request, response):
+
+        if not self.running_lock.acquire(False):
+            self.get_logger().info('Already running')
+
+        try:
+            self.get_logger().info('Running program')
+            
+            self.is_mission_running.data = True
+            self.running_pub.publish(self.is_mission_running)
+            
+        except Stop:
+            self.get_logger().info('Program stopped')
+        except Exception as e:
+            self.get_logger().error(str(e))
+
+        
+        self.running_lock.release()
+        self.is_mission_running.data = False
+        self.running_pub.publish(self.is_mission_running)
+        self.change_block('')
+
         self.get_logger().info('code: ' + request.code)
         response.success = True
         response.message = 'Testing'
@@ -78,7 +101,7 @@ class DroneBlocks(Node):
 
         try:
             self.get_logger().info('Run program')
-            self.running_pub.publish(True)
+            self.running_pub.publish(Bool(True))
 
             def program_thread():
                 self.stop = False
@@ -163,8 +186,8 @@ class DroneBlocks(Node):
         self.published_block = self.block
 
     def change_block(self, _block):
-        self. block = _block
-        if self.stop: raise Stop
+        self.block = _block
+        if self.stop_mission: raise Stop
 
     def _print(self, s):
         self.get_logger().info(str(s))
@@ -183,7 +206,7 @@ def main(args=None):
     rclpy.init(args=args)
 
     droneblocks = DroneBlocks()
-    droneblocks.create_service(Run, '~/run', droneblocks.run)
+    droneblocks.create_service(Run, '~/run', droneblocks.run2)
     droneblocks.create_service(Trigger, '~/stop', droneblocks.stop)
     droneblocks.create_service(Load, '~/load', droneblocks.load)
     droneblocks.create_service(Store, '~/store', droneblocks.store)
