@@ -17,6 +17,18 @@ ros2 pkg create dexi --dependencies rclcpp --build-type ament_cmake
 
 # Camera
 
+Make sure to enable legacy camera support on Pi 4 (Ubuntu 22.04 LTS) in /boot/firmware/config.txt:
+
+```
+start_x=1
+```
+
+and make sure to comment out the following line:
+
+```
+#camera_auto_detect=1
+```
+
 ### Build
 
 - cd /root/ros2_ws/src
