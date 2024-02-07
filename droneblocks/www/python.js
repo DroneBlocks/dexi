@@ -472,9 +472,8 @@ Blockly.Python.led_count = function (block) {
 	return [`get_led_count()`, Blockly.Python.ORDER_FUNCTION_CALL]
 }
 
-function pigpio() {
-	Blockly.Python.definitions_['import_pigpio'] = 'import pigpio';
-	Blockly.Python.definitions_['init_pigpio'] = 'pi = pigpio.pi()\nif not pi.connected: raise Exception(\'Cannot connect to pigpiod\')';
+function gpiozero() {
+	Blockly.Python.definitions_['import_gpizero'] = 'from gpiozero import PWMLED';
 }
 
 const GPIO_READ = `\ndef gpio_read(pin):
@@ -482,8 +481,8 @@ const GPIO_READ = `\ndef gpio_read(pin):
     return pi.read(pin)\n`;
 
 const GPIO_WRITE = `\ndef gpio_write(pin, level):
-    pi.set_mode(pin, pigpio.OUTPUT)
-    pi.write(pin, level)\n`;
+	led = PWMLED(pin)
+	led.value = level`;
 
 const SET_SERVO = `\ndef set_servo(pin, pwm):
     pi.set_mode(pin, pigpio.OUTPUT)
@@ -494,22 +493,23 @@ const SET_DUTY_CYCLE = `\ndef set_duty_cycle(pin, duty_cycle):
     pi.set_PWM_dutycycle(pin, duty_cycle * 255)\n`;
 
 Blockly.Python.gpio_read = function (block) {
-	pigpio();
+	gpiozero();
 	Blockly.Python.definitions_['gpio_read'] = GPIO_READ;
 	var pin = Blockly.Python.valueToCode(block, 'PIN', Blockly.Python.ORDER_NONE);
 	return [`gpio_read(${pin})`, Blockly.Python.ORDER_FUNCTION_CALL];
 }
 
 Blockly.Python.gpio_write = function (block) {
-	pigpio();
+	gpiozero();
 	Blockly.Python.definitions_['gpio_write'] = GPIO_WRITE;
 	var pin = Blockly.Python.valueToCode(block, 'PIN', Blockly.Python.ORDER_NONE);
 	var level = Blockly.Python.valueToCode(block, 'LEVEL', Blockly.Python.ORDER_NONE);
+	level = level === 'True' ? 1 : 0;
 	return `gpio_write(${pin}, ${level})\n`;
 }
 
 Blockly.Python.set_servo = function (block) {
-	pigpio();
+	gpiozero();
 	Blockly.Python.definitions_['set_servo'] = SET_SERVO;
 	var pin = Blockly.Python.valueToCode(block, 'PIN', Blockly.Python.ORDER_NONE);
 	var pwm = Blockly.Python.valueToCode(block, 'PWM', Blockly.Python.ORDER_NONE);
@@ -517,7 +517,7 @@ Blockly.Python.set_servo = function (block) {
 }
 
 Blockly.Python.set_duty_cycle = function (block) {
-	pigpio();
+	gpiozero();
 	Blockly.Python.definitions_['set_duty_cycle'] = SET_DUTY_CYCLE;
 	var pin = Blockly.Python.valueToCode(block, 'PIN', Blockly.Python.ORDER_NONE);
 	var dutyCycle = Blockly.Python.valueToCode(block, 'DUTY_CYCLE', Blockly.Python.ORDER_NONE);
