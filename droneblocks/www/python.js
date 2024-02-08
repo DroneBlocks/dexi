@@ -76,7 +76,7 @@ var rosDefinitions = {};
 
 function generateROSDefinitions() {
 	// order for ROS definitions is significant, so generate all ROS definitions as one
-	var code = `rclpy.init('flight')\n\n`;
+	var code = ``;
 	if (rosDefinitions.offboard) {
 		code += `get_telemetry = rospy.ServiceProxy('get_telemetry', srv.GetTelemetry)\n`;
 		code += `navigate = rospy.ServiceProxy('navigate', srv.Navigate)\n`;
@@ -139,7 +139,7 @@ function generateROSDefinitions() {
 }
 
 function initNode() {
-	Blockly.Python.definitions_['import_rospy'] = 'import rclpy';
+	Blockly.Python.definitions_['import_rospy'] = 'import rclpy\nfrom time import sleep';
 	generateROSDefinitions();
 }
 
@@ -311,7 +311,7 @@ Blockly.Python.arrived = function (block) {
 
 Blockly.Python.wait = function (block) {
 	initNode();
-	return `rospy.sleep(${Blockly.Python.valueToCode(block, 'TIME', Blockly.Python.ORDER_NONE)})\n`;
+	return `sleep(${Blockly.Python.valueToCode(block, 'TIME', Blockly.Python.ORDER_NONE)})\n`;
 }
 
 Blockly.Python.setpoint = function (block) {

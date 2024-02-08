@@ -32,7 +32,7 @@ class Stop(Exception):
 class DroneBlocks(Node):
 
     def __init__(self):
-        super().__init__('droneblocks_blockly')
+        super().__init__('droneblocks')
 
         qos_profile_1 = QoSProfile(
             reliability=QoSReliabilityPolicy.BEST_EFFORT,
@@ -203,6 +203,7 @@ class DroneBlocks(Node):
         self.published_block = self.block
 
     def change_block(self, _block):
+        self.get_logger().info(str(_block))
         self.block = _block
         if self.stop_mission: raise Stop
 
