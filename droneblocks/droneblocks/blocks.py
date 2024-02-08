@@ -68,34 +68,52 @@ class DroneBlocks(Node):
 
         # rclpy.Timer(rclpy.Duration(self.get_parameter('block_rate', 0.2)), self.publish_block)
 
-    def run2(self, request, response):
+    def run(self, request, response):
 
         if not self.running_lock.acquire(False):
             self.get_logger().info('Already running')
 
         try:
             self.get_logger().info('Running program')
-            
             self.is_mission_running.data = True
             self.running_pub.publish(self.is_mission_running)
-            
-        except Stop:
-            self.get_logger().info('Program stopped')
+
+            def program_thread():
+                self.get_logger().info('program thread')
+                self.stop_mission = False
+
+                try:
+                    self.get_logger().info('try')
+                    g = {'rclpy': rclpy,
+                        '_b': self.change_block,
+                        'print': self._print,
+                        'raw_input': self._input}
+                    exec(request.code, g)
+                except Stop:
+                    self.get_logger().info('Program stopped')
+                except Exception as e:
+                    self.get_logger().error(str(e))
+
+                self.running_lock.release()
+                self.is_mission_running.data = False
+                self.running_pub.publish(self.is_mission_running)
+                self.change_block('')
+
+                self.get_logger().info('code: ' + request.code)
+
+            t = threading.Thread(target=program_thread)
+            t.start()
+
+            response.success = True
+            response.message = 'Testing'
+            return response
+
         except Exception as e:
-            self.get_logger().error(str(e))
-
-        
-        self.running_lock.release()
-        self.is_mission_running.data = False
-        self.running_pub.publish(self.is_mission_running)
-        self.change_block('')
-
-        self.get_logger().info('code: ' + request.code)
-        response.success = True
-        response.message = 'Testing'
-        return response
-    
-    def run(self, req):
+            response.success = True
+            response.message = 'Error'
+            return response
+            
+    def run_defunct(self, req):
         if not self.running_lock.acquire(False):
             return {'message': 'Already running'}
 
@@ -191,7 +209,9 @@ class DroneBlocks(Node):
 
     def _print(self, s):
         self.get_logger().info(str(s))
-        self.print_pub.publish(str(s))
+        print_str = String()
+        print_str.data = s
+        self.print_pub.publish(print_str)
 
     def _input(self, s):
         self.get_logger().info('Input with message %s', s)
@@ -206,7 +226,7 @@ def main(args=None):
     rclpy.init(args=args)
 
     droneblocks = DroneBlocks()
-    droneblocks.create_service(Run, '~/run', droneblocks.run2)
+    droneblocks.create_service(Run, '~/run', droneblocks.run)
     droneblocks.create_service(Trigger, '~/stop', droneblocks.stop)
     droneblocks.create_service(Load, '~/load', droneblocks.load)
     droneblocks.create_service(Store, '~/store', droneblocks.store)
