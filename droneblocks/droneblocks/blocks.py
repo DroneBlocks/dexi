@@ -56,7 +56,9 @@ class DroneBlocks(Node):
         self.print_pub = self.create_publisher(String, '~/print', qos_profile_10)
         self.prompt_pub = self.create_publisher(Prompt, '~/prompt', qos_profile_10)
         self.error_pub = self.create_publisher(String, '~/error', qos_profile_10)
-        self.running_pub.publish(Bool()) # sends false
+
+        self.is_mission_running = Bool() # False
+        self.running_pub.publish(self.is_mission_running)
 
         # TODO: somehow get the program path working where the .. causes problems with colcon build --symlink-install --packages-select droneblocks
         # self.declare_parameter('~/programs_dir', os.path.dirname(os.path.abspath(__file__)) + '../programs')
@@ -66,19 +68,57 @@ class DroneBlocks(Node):
 
         # rclpy.Timer(rclpy.Duration(self.get_parameter('block_rate', 0.2)), self.publish_block)
 
-    def run2(self, request, response):
+    def run(self, request, response):
+
         self.get_logger().info('code: ' + request.code)
-        response.success = True
-        response.message = 'Testing'
-        return response
-    
-    def run(self, req):
+
+        if not self.running_lock.acquire(False):
+            self.get_logger().info('Already running')
+            response.message = 'Already running'
+
+        try:
+            self.is_mission_running.data = True
+            self.running_pub.publish(self.is_mission_running)
+
+            def program_thread():
+                self.get_logger().info('Inside program thread')
+                self.stop_mission = False
+
+                try:
+                    g = {'rclpy': rclpy,
+                        '_b': self.change_block,
+                        'print': self._print,
+                        'raw_input': self._input}
+                    exec(request.code, g)
+                except Stop:
+                    self.get_logger().info('Program stopped')
+                except Exception as e:
+                    self.get_logger().error(str(e))
+
+                self.running_lock.release()
+                self.is_mission_running.data = False
+                self.running_pub.publish(self.is_mission_running)
+                self.change_block('')
+
+            t = threading.Thread(target=program_thread)
+            t.start()
+
+            response.success = True
+            response.message = 'Testing'
+            return response
+
+        except Exception as e:
+            response.success = True
+            response.message = 'Error'
+            return response
+            
+    def run_defunct(self, req):
         if not self.running_lock.acquire(False):
             return {'message': 'Already running'}
 
         try:
             self.get_logger().info('Run program')
-            self.running_pub.publish(True)
+            self.running_pub.publish(Bool(True))
 
             def program_thread():
                 self.stop = False
@@ -163,12 +203,14 @@ class DroneBlocks(Node):
         self.published_block = self.block
 
     def change_block(self, _block):
-        self. block = _block
-        if self.stop: raise Stop
+        self.block = _block
+        if self.stop_mission: raise Stop
 
     def _print(self, s):
         self.get_logger().info(str(s))
-        self.print_pub.publish(str(s))
+        print_str = String()
+        print_str.data = s
+        self.print_pub.publish(print_str)
 
     def _input(self, s):
         self.get_logger().info('Input with message %s', s)

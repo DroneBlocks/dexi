@@ -1,3 +1,4 @@
 <launch>
     <node pkg="droneblocks" exec="droneblocks" output="screen" />
+    <node pkg="droneblocks" exec="offboard_bridge" output="screen" />
 </launch>

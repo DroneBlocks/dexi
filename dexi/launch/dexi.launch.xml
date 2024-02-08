@@ -1,7 +1,15 @@
 <launch>
+    <let name="sitl" value="true" />
+
     <!-- rosbridge server -->
     <include file="$(find-pkg-share rosbridge_server)/launch/rosbridge_websocket_launch.xml" />
 
     <!-- DroneBlocks -->
-    <node pkg="droneblocks" exec="droneblocks" output="screen" />
+    <include file="$(find-pkg-share droneblocks)/launch/droneblocks.launch.xml" />
+
+    <!-- MAVROS w/ SITL -->
+    <include file="$(find-pkg-share dexi)/launch/mavros_sitl.launch.xml" if="$(var sitl)" />
+    
+    <!-- MAVROS w/ Pixhawk-->
+    <include file="$(find-pkg-share dexi)/launch/mavros.launch.xml" unless="$(var sitl)" />
 </launch>

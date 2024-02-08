@@ -1,5 +1,6 @@
-from setuptools import find_packages, setup
 import os
+from glob import glob
+from setuptools import find_packages, setup
 
 package_name = 'droneblocks'
 
@@ -31,6 +32,7 @@ data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        (os.path.join('share', package_name, 'launch'), glob(os.path.join('launch', '*launch.[pxy][yma]*')))
     ]
 
 setup(
@@ -49,7 +51,8 @@ setup(
         'console_scripts': [
             'talker = droneblocks.publisher:main',
             'listener = droneblocks.subscriber:main',
-            'droneblocks = droneblocks.blocks:main'
+            'droneblocks = droneblocks.blocks:main',
+            'offboard_bridge = droneblocks.offboard_bridge:main'
         ],
     },
 )
