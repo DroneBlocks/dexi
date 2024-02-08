@@ -70,20 +70,21 @@ class DroneBlocks(Node):
 
     def run(self, request, response):
 
+        self.get_logger().info('code: ' + request.code)
+
         if not self.running_lock.acquire(False):
             self.get_logger().info('Already running')
+            response.message = 'Already running'
 
         try:
-            self.get_logger().info('Running program')
             self.is_mission_running.data = True
             self.running_pub.publish(self.is_mission_running)
 
             def program_thread():
-                self.get_logger().info('program thread')
+                self.get_logger().info('Inside program thread')
                 self.stop_mission = False
 
                 try:
-                    self.get_logger().info('try')
                     g = {'rclpy': rclpy,
                         '_b': self.change_block,
                         'print': self._print,
@@ -98,8 +99,6 @@ class DroneBlocks(Node):
                 self.is_mission_running.data = False
                 self.running_pub.publish(self.is_mission_running)
                 self.change_block('')
-
-                self.get_logger().info('code: ' + request.code)
 
             t = threading.Thread(target=program_thread)
             t.start()
