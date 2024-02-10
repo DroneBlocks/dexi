@@ -47,8 +47,8 @@ class DroneBlocks(Node):
         )
 
         self.stop_mission = None
-        self.block = ''
-        self.published_block = None
+        self.block = String()
+        self.published_block = String()
         self.running_lock = threading.Lock()
 
         self.running_pub = self.create_publisher(Bool, '~/running', qos_profile_1)
@@ -65,8 +65,6 @@ class DroneBlocks(Node):
         self.declare_parameter('~/programs_dir', '/root/ros2_ws/build/droneblocks/programs')
         self.programs_path = self.get_parameter('~/programs_dir').value
         self.name_regexp = re.compile(r'^[a-zA-Z-_.]{0,20}$')
-
-        # rclpy.Timer(rclpy.Duration(self.get_parameter('block_rate', 0.2)), self.publish_block)
 
     def run(self, request, response):
 
@@ -196,15 +194,15 @@ class DroneBlocks(Node):
             response.message = str(e)
             return response
 
-    def publish_block(self, event):
-        if self.published_block != self.block:
-            self.block_pub.publish(self.block)
-       
-        self.published_block = self.block
-
     def change_block(self, _block):
-        self.get_logger().info(str(_block))
-        self.block = _block
+        self.block.data = _block
+
+        if self.block.data != self.published_block.data:
+            self.get_logger().info('publishing block: ' + self.block.data)
+            self.block_pub.publish(self.block)
+
+        self.published_block.data = self.block.data
+
         if self.stop_mission: raise Stop
 
     def _print(self, s):
