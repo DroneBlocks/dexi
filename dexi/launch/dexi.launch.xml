@@ -1,11 +1,15 @@
 <launch>
     <let name="sitl" value="true" />
+    <let name="led" value="true" />
 
     <!-- rosbridge server -->
     <include file="$(find-pkg-share rosbridge_server)/launch/rosbridge_websocket_launch.xml" />
 
     <!-- DroneBlocks -->
     <include file="$(find-pkg-share droneblocks)/launch/droneblocks.launch.xml" />
+
+    <!-- LED -->
+    <include file="$(find-pkg-share dexi)/launch/led.launch.xml" if="$(var led)" />
 
     <!-- MAVROS w/ SITL -->
     <include file="$(find-pkg-share dexi)/launch/mavros_sitl.launch.xml" if="$(var sitl)" />

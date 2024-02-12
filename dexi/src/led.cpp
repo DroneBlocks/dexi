@@ -142,8 +142,8 @@ DexiLEDController::DexiLEDController() :
 {
 	// this->get_node_options().allow_undeclared_parameters(true);
 	// this->get_node_options().automatically_declare_parameters_from_overrides(true);
-    // double blink_rate, blink_fast_rate, flash_delay, fade_period, wipe_period, rainbow_period;
-    this->get_parameter_or("blink_rate",this->blink_rate, 2.0);
+	// double blink_rate, blink_fast_rate, flash_delay, fade_period, wipe_period, rainbow_period;
+	this->get_parameter_or("blink_rate",this->blink_rate, 2.0);
 	this->get_parameter_or("blink_fast_rate",this->blink_fast_rate, blink_rate * 4.0);
 	this->get_parameter_or("fade_period",this->fade_period, 0.5);
 	this->get_parameter_or("wipe_period",this->wipe_period, 0.5);
@@ -514,11 +514,11 @@ bool DexiLEDController::startEffect(std::shared_ptr<Effect> effect){
 
 int main(int argc, char **argv)
 {
-    rclcpp::init(argc, argv);
+	rclcpp::init(argc, argv);
 	auto offboard = std::make_shared<DexiLEDController>();
-    rclcpp::executors::MultiThreadedExecutor executor;
-    executor.add_node(offboard);
-    executor.spin();
-    rclcpp::shutdown();
-    return 0;
+	rclcpp::executors::MultiThreadedExecutor executor;
+	executor.add_node(offboard);
+	executor.spin();
+	rclcpp::shutdown();
+	return 0;
 }

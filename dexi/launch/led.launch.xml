@@ -1,0 +1,20 @@
+<launch>
+
+  <node pkg="dexi" exec="led" output="screen">
+    <param name="led" value="led"/>
+    <param name="blink_rate" value="2.0"/>
+    <param name="fade_period" value="0.5"/>
+    <param name="rainbow_period" value="5.0"/>
+  </node>
+
+  <!-- ws281x led strip driver -->
+  <node pkg="ws281x" exec="ws281x_node" output="screen">
+    <param name="led_count" value="20"/>
+    <param name="gpio_pin" value="21"/>
+    <param name="brightness" value="64"/>
+    <param name="strip_type" value="WS2811_STRIP_GRB"/>
+    <param name="target_frequency" value="800000"/>
+    <param name="dma" value="10"/>
+    <param name="invert" value="false"/>
+  </node>
+</launch>
