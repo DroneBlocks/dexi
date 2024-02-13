@@ -136,6 +136,21 @@ ros2 launch mavros px4.launch
 
 # LED
 
+Notes: the led core files live in the ws281x package. To run the dexi launch file with LED support you need to give elevated privileges to the node:
+
+```
+ros2 pkg prefix ws281x
+sudo chown -R root:root /home/droneblocks/ros2_ws/install/ws281x/lib/
+sudo chmod -R +s /home/droneblocks/ros2_ws/install/ws281x/lib
+```
+
+Call the set_effect service:
+
+```
+ros2 service call set_effect dexi_msgs/srv/SetLedEffect "{effect: 'fill', r: 255, g: 0, b: 0}"
+ros2 service call set_effect dexi_msgs/srv/SetLedEffect "{effect: 'fade', r: 255, g: 255, b: 255, brightness: 64, duration: 10, priority: 1}"
+```
+
 # GPIO
 
 ### Install
