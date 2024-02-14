@@ -1,25 +1,16 @@
-from gpiozero import LED
+import pigpio
 from time import sleep
 
-laser = LED(18)
+pi = pigpio.pi()
+
+if not pi.connected: raise Exception('Cannot connect to pigpiod')
+
+def gpio_write(pin, level):
+    pi.set_mode(pin, pigpio.OUTPUT)
+    pi.write(pin, level)
 
 while True:
-    laser.on()
+    gpio_write(18, True)
     sleep(1)
-    laser.off()
+    gpio_write(18, False)
     sleep(1)
-
-
-"""
-# Blink w/ PWM
-from gpiozero import PWMLED
-from time import sleep
-
-laser = PWMLED(18)
-
-while True:
-    laser.value = 0
-    sleep(1)
-    laser.value = 1
-    sleep(1)
-"""
