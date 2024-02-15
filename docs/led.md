@@ -27,3 +27,7 @@ sudo ./test -x 34 -y 1 -g 21 -c
 ```
 
 The command above specifies a single row strip of 34 LEDs connected to gpio 21.
+
+## Python
+
+sudo pip install rpi_ws281x
