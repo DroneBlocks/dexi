@@ -48,3 +48,9 @@ sudo apt-get install libboost-all-dev
 
 - source install/setup.bash
 - ros2 run web_video_server web_video_server
+
+# Image Rectification
+
+```
+sudo apt install ros-humble-image-proc
+```
