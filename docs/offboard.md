@@ -33,7 +33,7 @@ Now launch the offboard nodes:
 
 ```
 source install/setup.bash
-ros2 launch dexi_py offboard.launch.yaml
+ros2 launch dexi_py offboard.launch.xml
 ```
 
 ## Command Line

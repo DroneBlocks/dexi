@@ -117,8 +117,8 @@ new ROSLIB.Topic({ ros: ros.ros, name: '/mavros/state', messageType: 'mavros_msg
 	document.getElementById("mavros-state").innerHTML = msg.mode;
 });
 
-new ROSLIB.Topic({ ros: ros.ros, name: '/mavros/battery', messageType: 'sensor_msgs/BatteryState' }).subscribe(function (msg) {
-	document.getElementById("mavros-battery").innerHTML = `Battery: ${parseInt(msg.percentage * 100)}% : ${msg.voltage}V`;
+new ROSLIB.Topic({ ros: ros.ros, name: '/throttled/battery_status', messageType: 'px4_msgs/msg/BatteryStatus' }).subscribe(function (msg) {
+	document.getElementById("mavros-battery").innerHTML = `Battery: ${msg.voltage_v}V`;
 });
 
 window.stopProgram = function () {

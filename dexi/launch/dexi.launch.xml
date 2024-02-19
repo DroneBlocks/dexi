@@ -1,6 +1,6 @@
 <launch>
     <let name="sitl" value="true" />
-    <let name="led" value="true" />
+    <let name="led" value="false" />
 
     <!-- rosbridge server -->
     <include file="$(find-pkg-share rosbridge_server)/launch/rosbridge_websocket_launch.xml" />
@@ -11,9 +11,12 @@
     <!-- LED -->
     <include file="$(find-pkg-share dexi)/launch/led.launch.xml" if="$(var led)" />
 
+    <!-- Offboard w/ MicroXRCEAgent -->
+    <include file="$(find-pkg-share dexi_py)/launch/offboard.launch.xml" />
+
     <!-- MAVROS w/ SITL -->
-    <include file="$(find-pkg-share dexi)/launch/mavros_sitl.launch.xml" if="$(var sitl)" />
+    <!-- <include file="$(find-pkg-share dexi)/launch/mavros_sitl.launch.xml" if="$(var sitl)" /> -->
     
     <!-- MAVROS w/ Pixhawk-->
-    <include file="$(find-pkg-share dexi)/launch/mavros.launch.xml" unless="$(var sitl)" />
+    <!-- <include file="$(find-pkg-share dexi)/launch/mavros.launch.xml" unless="$(var sitl)" /> -->
 </launch>
