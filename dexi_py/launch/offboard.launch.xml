@@ -1,0 +1,7 @@
+<launch>
+  <node pkg="dexi_py" exec="offboard_node" name="offboard" namespace="dexi" />
+  <node pkg="dexi_py" exec="processes" name="processes" namespace="dexi" />
+  <!-- Cannot figure out how to specify the args below in yaml -->
+  <node pkg="topic_tools" exec="throttle" args="messages /fmu/out/battery_status 1 /throttled/battery_status" />
+  <node pkg="topic_tools" exec="throttle" args="messages /fmu/out/vehicle_status 1 /throttled/vehicle_status" />
+</launch>

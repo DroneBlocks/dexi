@@ -113,12 +113,13 @@ new ROSLIB.Topic({ ros: ros.ros, name: ros.priv + '/prompt', messageType: 'dexi_
 	}).publish(new ROSLIB.Message({ data: response || '' }));
 });
 
-new ROSLIB.Topic({ ros: ros.ros, name: '/mavros/state', messageType: 'mavros_msgs/State' }).subscribe(function (msg) {
-	document.getElementById("mavros-state").innerHTML = msg.mode;
+new ROSLIB.Topic({ ros: ros.ros, name: '/throttled/vehicle_status', messageType: 'px4_msgs/msg/VehicleStatus' }).subscribe(function (msg) {
+	document.getElementById("vehicle-status-arming").innerHTML = parseInt(msg.arming_state) == 1 ? 'Disarmed' : 'Armed';
+	document.getElementById("vehicle-status-mode").innerHTML = `Mode: ${msg.nav_state}`;
 });
 
-new ROSLIB.Topic({ ros: ros.ros, name: '/mavros/battery', messageType: 'sensor_msgs/BatteryState' }).subscribe(function (msg) {
-	document.getElementById("mavros-battery").innerHTML = `Battery: ${parseInt(msg.percentage * 100)}% : ${msg.voltage}V`;
+new ROSLIB.Topic({ ros: ros.ros, name: '/throttled/battery_status', messageType: 'px4_msgs/msg/BatteryStatus' }).subscribe(function (msg) {
+	document.getElementById("battery-status-voltage").innerHTML = `Battery: ${msg.voltage_v}V`;
 });
 
 window.stopProgram = function () {
