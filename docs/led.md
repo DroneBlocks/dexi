@@ -1,12 +1,25 @@
 # LED Setup
 
+Note: it is imperative to set the following param in /boot/firmware/config.txt for LED control to work properly via SPI:
+
+```
+core_freq=500
+core_freq_min=500
+```
+
+and reboot.
+
+Per the readme here: https://github.com/jgarff/rpi_ws281x
+
 ## Install
+
 ```
 sudo apt install python3-rpi.gpio
 sudo pip3 install adafruit-circuitpython-neopixel
 ```
 
 ## Command Line test
+
 ```
 ros2 service call /dexi/set_led led_msgs/srv/SetLED "{index: 0, r: 0, g: 255, b: 0, brightness: 255}"
 ```
