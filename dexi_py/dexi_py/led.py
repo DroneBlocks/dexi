@@ -1,48 +1,43 @@
 import rclpy
+from rclpy.node import Node
 from led_msgs.srv import SetLED
-from time import sleep
-# from led_msgs.srv import SetLEDs
-# from led_msgs.msg import LEDState
+import board
+import neopixel
 
-rclpy.init()
+class LEDService(Node):
 
-node = rclpy.create_node('temp')
+    def __init__(self):
+        super().__init__('led_service')
+        self.srv = self.create_service(SetLED, 'set_led', self.set_led_callback)
+        self.pixel_pin = board.D10
+        self.num_pixels = 30
+        self.pixel_order = neopixel.GRB
+        self.pixels = neopixel.NeoPixel(self.pixel_pin, self.num_pixels, brightness=0.2, auto_write=False, pixel_order=self.pixel_order)
 
-# set_leds = node.create_client(SetLEDs, 'set_leds')
-set_led = node.create_client(SetLED, '/dexi/set_led')
 
-# while not set_leds.wait_for_service(timeout_sec=1.0):
- # node.get_logger().info('service not available, waiting again...')
+    def set_led_callback(self, request, response):
+        self.get_logger().info(str(request))
+        self.pixels[request.index] = (request.r, request.g, request.b)
+        self.pixels.show()
+        response.success = True
+        return response
 
-while not set_led.wait_for_service(timeout_sec=1.0):
-  node.get_logger().info('service not available, waiting again...')
+    def set_leds_callback(self):
+        return
 
-# state = LEDState()
-# state.index = 0
-# state.r = 255
-# state.g = 0
-# state.b = 0
-# state.brightness = 255
+    def rainbow(self):
+        return
 
-# request = SetLEDs.Request()
-# request.leds = [state]
+    def fill (self):
+        return
 
-# future = set_leds.call_async(request)
 
-for index in range(0, 30):    
-  request = SetLED.Request()
-  request.index = index
-  request.r = 0
-  request.g = 0
-  request.b = 0
-  request.brightness = 255
-  sleep(0.1)
+def main(args=None):
+    rclpy.init(args=args)
+    led_service = LEDService()
+    rclpy.spin(led_service)
+    rclpy.shutdown()
 
-  future = set_led.call_async(request)
 
-  rclpy.spin_until_future_complete(node, future)
-
-  print(future.result())
-
-print('done')
-
+if __name__ == '__main__':
+    main()
