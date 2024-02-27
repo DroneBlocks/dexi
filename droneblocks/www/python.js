@@ -102,8 +102,10 @@ function generateROSDefinitions() {
 		code += `set_effect = rospy.ServiceProxy('led/set_effect', SetLEDEffect, persistent=True)\n`;
 	}
 	if (rosDefinitions.setLeds) {
-		Blockly.Python.definitions_['import_set_led'] = 'from led_msgs.srv import SetLEDs\nfrom led_msgs.msg import LEDState';
-		code += `set_leds = rospy.ServiceProxy('led/set_leds', SetLEDs, persistent=True)\n`;
+		Blockly.Python.definitions_['import_set_led'] = 'from led_msgs.srv import SetLED\nfrom led_msgs.msg import LEDState';
+		code += `set_led = node.create_client(SetLED, '/dexi/set_led')`;
+		code += `\nwhile not set_led.wait_for_service(timeout_sec=1.0):
+		node.get_logger().info('service not available, waiting again...')`;
 	}
 	if (rosDefinitions.ledStateArray) {
 		Blockly.Python.definitions_['import_led_state_array'] = 'from led_msgs.msg import LEDStateArray';
@@ -139,7 +141,7 @@ function generateROSDefinitions() {
 }
 
 function initNode() {
-	Blockly.Python.definitions_['import_rospy'] = 'import rclpy\nfrom time import sleep';
+	Blockly.Python.definitions_['import_rospy'] = 'import rclpy\nfrom time import sleep\nnode = rclpy.create_node(\'droneblocks_mission\')';
 	generateROSDefinitions();
 }
 
@@ -450,7 +452,8 @@ Blockly.Python.set_led = function (block) {
 
 	if (/^'(.*)'$/.test(colorCode)) { // is simple string
 		let color = parseColor(colorCode);
-		return `set_leds([LEDState(index=int(${index}), r=${color.r}, g=${color.g}, b=${color.b})])\n`; // TODO: check for simple int
+		let code = `request = SetLED.Request()\nrequest.index = ${index}\nrequest.r = ${color.r}\nrequest.g = ${color.g}\nrequest.b = ${color.b}\nrequest.brightness = 255\nfuture = set_led.call_async(request)\nrclpy.spin_until_future_complete(node, future)\n`;
+		return code;
 	} else {
 		let parseColor = Blockly.Python.provideFunction_('parse_color', [PARSE_COLOR]);
 		return `set_leds([LEDState(index=${index}, **${parseColor}(${colorCode}))])\n`;
