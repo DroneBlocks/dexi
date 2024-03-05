@@ -1,6 +1,0 @@
-#!/bin/sh
-
-if [ "$1" = configure ]; then
-    echo "Setting setuid bit for @PROJECT_NAME@_node" >&2
-    chmod u+s /opt/ros/@ROSDISTRO@/lib/@PROJECT_NAME@/@PROJECT_NAME@_node
-fi

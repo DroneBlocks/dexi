@@ -46,6 +46,12 @@ class PixelbufView:
         else:
             return self.parent.auto_write
 
+    @auto_write.setter
+    def auto_write(self, state: bool) -> None:
+        if self.force_no_auto_write:
+            state = False
+        self.parent.auto_write = state
+
     def __setitem__(
         self, index: int | slice, val: ColorUnion | Sequence[ColorUnion]
     ) -> None:
@@ -127,8 +133,9 @@ class MirroredPixelbufView(PixelbufView):
         self, index: int | slice, val: ColorUnion | Sequence[ColorUnion]
     ) -> None:
         if isinstance(index, slice):
-            assert 0 <= slice.start
-            assert slice.stop < len(self)
+            start, stop, _ = index.indices(len(self))
+            assert 0 <= start
+            assert stop < len(self)
         else:
             assert 0 <= index < len(self)
 
