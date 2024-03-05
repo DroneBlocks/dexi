@@ -26,15 +26,13 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-install(TARGETS
-  led
-  DESTINATION lib/${PROJECT_NAME}
-)
+install(TARGETS led
+        DESTINATION lib/${PROJECT_NAME})
 
-install(DIRECTORY
-  launch
-  DESTINATION share/${PROJECT_NAME}/
-)
+install(DIRECTORY launch
+  		DESTINATION share/${PROJECT_NAME})
 
+install(PROGRAMS scripts/install.bash
+        DESTINATION bin/${PROJECT_NAME})
 
 ament_package()
