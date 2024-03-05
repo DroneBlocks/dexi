@@ -17,6 +17,7 @@ cd ~/dexi_ws/src
 git clone https://github.com/DroneBlocks/DEXI.git --recurse-submodules
 
 cd ..
+rosdep install --from-paths src -y --ignore-src
 colcon build --symlink-install
 ```
 
@@ -78,13 +79,6 @@ and make sure to comment out the following line:
 - ros2 run web_video_server web_video_server
 
 # Micro DDS Client
-
-### Build
-
-- cd ~/ros2_ws/src
-- git clone https://github.com/eProsima/Micro-XRCE-DDS-Agent.git
-- cd ~/ros2_ws
-- colcon build
 
 ### Run
 
