@@ -136,16 +136,6 @@ source /opt/ros/humble/setup.bash
 ros2 launch mavros px4.launch
 ```
 
-# PX4 ROS Messages and ROS Com Example
-
-### Build
-
-- cd ~/ros2_ws/src
-- git clone https://github.com/PX4/px4_msgs
-- git clone https://github.com/PX4/px4_ros_com
-- cd ~/ros2_ws
-- colcon build
-
 # Docker Dev
 
 ### New Container
