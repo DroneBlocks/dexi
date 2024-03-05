@@ -6,9 +6,27 @@
   echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(source /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
 - sudo apt update
 
-# Create the dexi package (first time setup)
+# Create the workspace
 
-ros2 pkg create dexi --dependencies rclcpp --build-type ament_cmake
+Create a workspace, clone the DEXI repo into it, and run a colcon build:
+
+```bash
+mkdir -p ~/dexi_ws/src
+cd ~/dexi_ws/src
+
+git clone https://github.com/DroneBlocks/DEXI.git --recurse-submodules
+
+cd ..
+colcon build --symlink-install
+```
+
+# Setup the service
+
+Run the install script to set the service to start on boot:
+
+```bash
+bash ~/dexi_ws/src/DEXI/dexi/scripts/install.bash
+```
 
 # ROSBRIDGE
 
