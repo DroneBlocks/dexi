@@ -20,7 +20,7 @@ class LEDStripNode(Node):
         super().__init__('dexi_led_strip')
 
         self.declare_parameter('spi_port', 1)
-        spi = SPI[self.get_parameter('spi_port').value]
+        spi = SPI[self.get_parameter('spi_port').value]()
 
         self.declare_parameter('led_count', 20)  # Actually 22
         led_count = self.get_parameter('led_count').value
