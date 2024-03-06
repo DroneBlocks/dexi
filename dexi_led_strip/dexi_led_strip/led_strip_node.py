@@ -1,13 +1,13 @@
-from threading import Thread
+from threading import Thread, Event
 
 import rclpy
 from rclpy.node import Node
 
+from dexi_msgs.srv import SetLedEffect
+
 from util import SPI, run_anim_until_done
 from neopixel_ring_spi import NeoPixelRing_SPI
 from channel_wrap_animation import ChannelWrapAnim
-
-BOOT_ANIM_ID = 0
 
 
 class LEDStripNode(Node):
@@ -37,21 +37,32 @@ class LEDStripNode(Node):
             start_index=start_index
         )
 
-        boot_anim = ChannelWrapAnim(self.pixels, 0.05)
+        self.boot_anim = ChannelWrapAnim(self.pixels, 0.05)
 
-        self.animations = {BOOT_ANIM_ID: boot_anim}
+        self.current_animation = None
+        self.animation_changed = Event()
 
         self.update_thread = Thread(target=self.update_loop, daemon=True)
-        self.boot_anim()
+        self.play_boot_anim()
         self.update_thread.start()
 
-    def boot_anim() -> None:
+    def play_boot_anim() -> None:
         if not self.update_thread.is_alive():
             self.pixels.fill(0)
-            run_anim_until_done(self.animations[BOOT_ANIM_ID])
+            run_anim_until_done(self.boot_anim)
 
     def update_loop() -> None:
-        pass
+        animation = None
+        self.animation_changed.set()
+        while True:
+            if self.animation_changed.is_set():
+                self.animation_changed.clear()
+                animation = self.current_animation
+
+            if animation is None:
+                self.animation_changed.wait()
+            else:
+                animation.animate()
         
 
 def main(args=None):
