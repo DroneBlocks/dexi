@@ -7,6 +7,9 @@ from rclpy.node import Node
 
 from adafruit_led_animation.animation.solid import Solid
 from adafruit_led_animation.animation.rainbow import Rainbow
+from adafruit_led_animation.animation.rainbowchase import RainbowChase
+from adafruit_led_animation.animation.pulse import Pulse
+from adafruit_led_animation.animation.comet import Comet
 
 from dexi_msgs.srv import SetLedEffect
 
@@ -81,7 +84,16 @@ class LEDStripNode(Node):
             self.current_animation = Solid(self.pixels, color)
         elif request.effect == 'rainbow':
             self.animation_duration = request.duration
-            self.current_animation = Rainbow(self.pixels, 0.05)
+            self.current_animation = Rainbow(self.pixels, 0.05)##
+        elif request.effect =='rainbowchase':
+            self.animation_duration = request.duration
+            self.current_animation = RainbowChase(self.pixels, 0.05)
+        elif request.effect =='pulse':
+            self.animation_duration = request.duration
+            self.current_animation = Pulse(self.pixels, 0.05, color)
+        elif request.effect =='comet':
+            self.animation_duration = request.duration
+            self.current_animation = Comet(self.pixels, 0.05, color)
         else:
             response.success = False
             response.message = f'Unknown effect: \"{request.effect}\"'
