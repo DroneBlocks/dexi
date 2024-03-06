@@ -1,0 +1,9 @@
+[submodule "micro-ROS-Agent"]
+	path = micro-ROS-Agent
+	url = https://github.com/micro-ROS/micro-ROS-Agent.git
+[submodule "px4_msgs"]
+	path = px4_msgs
+	url = https://github.com/PX4/px4_msgs
+[submodule "px4_ros_com"]
+	path = px4_ros_com
+	url = https://github.com/PX4/px4_ros_com
