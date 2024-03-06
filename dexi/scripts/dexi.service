@@ -1,0 +1,12 @@
+[Unit]
+Description="A service to run the DEXI ros launch file at boot"
+
+[Service]
+Type=simple
+User=pi
+ExecStart=/home/pi/dexi_ws/src/DEXI/dexi/scripts/start.bash
+StandardOutput=syslog
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
