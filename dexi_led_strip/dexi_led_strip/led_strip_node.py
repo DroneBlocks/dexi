@@ -31,7 +31,7 @@ class LEDStripNode(Node):
         self.declare_parameter('pixel_order', 'GRB')
         pixel_order = self.get_parameter('pixel_order').value
 
-        channel_count = len(self.pixel_order)
+        channel_count = len(pixel_order)
 
         self.set_service = self.create_service(SetLedEffect, 'set', self.set_callback)
 
