@@ -14,10 +14,6 @@ from util import SPI, run_anim_until_done
 from neopixel_ring_spi import NeoPixelRing_SPI
 from channel_wrap_animation import ChannelWrapAnim
 
-ANIMATIONS = {
-    
-}
-
 
 class LEDStripNode(Node):
     def __init__(self) -> None:
@@ -92,6 +88,7 @@ class LEDStripNode(Node):
             return response
         response.success = True
         response.message = 'Success'
+        return response
 
     def update_loop(self) -> None:
         animation = self.current_animation
