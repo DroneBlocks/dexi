@@ -1,10 +1,22 @@
-# Update repos
+# Setup ROS2
 
-- sudo apt update
-- sudo add-apt-repository universe
-- sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
-  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(source /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
-- sudo apt update
+```bash
+# Setup apt repos
+sudo apt install software-properties-common
+sudo add-apt-repository universe
+sudo apt install curl -y
+sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(source /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+sudo apt update
+
+# Install ROS2 humble
+sudo apt install ros-humble-ros-base ros-dev-tools ros-humble-rosbridge-server -y
+sudo rosdep init
+
+# Source the base workspace by default
+echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+source ~/.bashrc
+```
 
 # Create the workspace
 
@@ -29,11 +41,6 @@ Run the install script to set the service to start on boot:
 bash ~/dexi_ws/src/DEXI/dexi/scripts/install.bash
 ```
 
-# ROSBRIDGE
-
-- sudo apt install ros-humble-rosbridge-server
-- ros2 launch rosbridge_server rosbridge_websocket_launch.xml
-
 # Camera
 
 Make sure to enable legacy camera support on Pi 4 (Ubuntu 22.04 LTS) in /boot/firmware/config.txt:
@@ -47,36 +54,6 @@ and make sure to comment out the following line:
 ```
 #camera_auto_detect=1
 ```
-
-### Build
-
-- cd /root/ros2_ws/src
-- git clone https://github.com/Kapernikov/cv_camera
-- cd /root/ros2_ws
-- rosdep install --from-paths src -y --ignore-src
-- colcon build
-
-### Run
-
-- source install/setup.bash
-- ros2 run cv_camera cv_camera_node
-
-# Web video server
-
-### Build
-
-- cd /root/ros2_ws/src
-- git clone https://github.com/RobotWebTools/web_video_server/
-- cd web_video_server
-- git checkout ros2
-- cd ~/ros2_ws
-- rosdep install --from-paths src -y --ignore-src
-- colcon build
-
-### Run
-
-- source install/setup.bash
-- ros2 run web_video_server web_video_server
 
 # Micro DDS Client
 
