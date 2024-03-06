@@ -2,7 +2,7 @@ from adafruit_led_animation.animation import Animation
 from adafruit_led_animation.color import calculate_intensity
 from adafruit_led_animation.animation.comet import Comet
 
-from neopixel_ring_spi import MirroredPixelbufView
+from dexi_led_strip.neopixel_ring_spi import MirroredPixelbufView
 
 
 class ChannelWrapAnim(Animation):

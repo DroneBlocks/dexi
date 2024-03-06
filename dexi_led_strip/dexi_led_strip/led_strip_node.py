@@ -10,9 +10,9 @@ from adafruit_led_animation.animation.rainbow import Rainbow
 
 from dexi_msgs.srv import SetLedEffect
 
-from util import SPI, run_anim_until_done
-from neopixel_ring_spi import NeoPixelRing_SPI
-from channel_wrap_animation import ChannelWrapAnim
+from dexi_led_strip.util import SPI, run_anim_until_done
+from dexi_led_strip.neopixel_ring_spi import NeoPixelRing_SPI
+from dexi_led_strip.channel_wrap_animation import ChannelWrapAnim
 
 
 class LEDStripNode(Node):
