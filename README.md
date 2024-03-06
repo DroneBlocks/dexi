@@ -48,36 +48,6 @@ and make sure to comment out the following line:
 #camera_auto_detect=1
 ```
 
-### Build
-
-- cd /root/ros2_ws/src
-- git clone https://github.com/Kapernikov/cv_camera
-- cd /root/ros2_ws
-- rosdep install --from-paths src -y --ignore-src
-- colcon build
-
-### Run
-
-- source install/setup.bash
-- ros2 run cv_camera cv_camera_node
-
-# Web video server
-
-### Build
-
-- cd /root/ros2_ws/src
-- git clone https://github.com/RobotWebTools/web_video_server/
-- cd web_video_server
-- git checkout ros2
-- cd ~/ros2_ws
-- rosdep install --from-paths src -y --ignore-src
-- colcon build
-
-### Run
-
-- source install/setup.bash
-- ros2 run web_video_server web_video_server
-
 # Micro DDS Client
 
 ### Run
