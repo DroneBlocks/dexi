@@ -1,11 +1,12 @@
 import time
 import math
-from typing import Any
+from typing import Any, NamedTuple
 from threading import Thread, Event
 
 import rclpy
 from rclpy.node import Node
 
+from adafruit_led_animation.animation import Animation
 from adafruit_led_animation.animation.solid import Solid
 from adafruit_led_animation.animation.colorcycle import ColorCycle
 from adafruit_led_animation.animation.blink import Blink
@@ -21,6 +22,20 @@ from dexi_msgs.srv import SetLedEffect
 from dexi_led_strip.util import SPI, run_anim_until_done
 from dexi_led_strip.neopixel_ring_spi import NeoPixelRing_SPI
 from dexi_led_strip.channel_wrap_animation import ChannelWrapAnim
+
+
+def ensure_non_zero(value: float | int, default: Any = None) -> float | int | Any:
+    if math.isclose(value, 0):
+        return default
+    return value
+
+
+class AnimationEntry(NamedTuple):
+    animation: Animation
+    duration: float | int
+
+
+BASE_COLOR_ENTRY = AnimationEntry(None, None)
 
 
 class LEDStripNode(Node):
@@ -52,12 +67,9 @@ class LEDStripNode(Node):
             start_index=start_index
         )
 
-        self.boot_anim = ChannelWrapAnim(self.pixels, 0.05)
-
         self.base_color = [0] * channel_count
 
         self._current_animation = None
-        self._animation_duration = None
         self._animation_start_time = -1
         self.animation_changed = Event()
 
@@ -66,62 +78,46 @@ class LEDStripNode(Node):
         self.update_thread.start()
 
     @property
-    def current_animation(self) -> Any:
+    def current_animation(self) -> AnimationEntry | None:
         return self._current_animation
 
     @current_animation.setter
-    def current_animation(self, new_animation: Any) -> None:
+    def current_animation(self, new_animation: AnimationEntry) -> None:
         self._current_animation = new_animation
         self._animation_start_time = time.time()
         self.animation_changed.set()
 
-    @property
-    def animation_duration(self) -> float | None:
-        return self._animation_duration
-
-    @current_animation.setter
-    def animation_duration(self, new_duration: float) -> None:
-        if math.isclose(new_duration, 0):
-            new_duration = None
-        self._animation_duration = new_duration
-
     def play_boot_anim(self) -> None:
         if not self.update_thread.is_alive():
             self.pixels.fill(0)
-            run_anim_until_done(self.boot_anim)
+            boot_anim = ChannelWrapAnim(self.pixels, 0.05)
+            run_anim_until_done(boot_anim)
 
     def set_callback(self, request: SetLedEffect.Request, response: SetLedEffect.Response) -> SetLedEffect.Response:
         # ToDo: add speed and argument to msg
-        request.duration
+        duration = ensure_non_zero(request.duration)
+        effect = request.effect
         color = request.r, request.g, request.b
-        if request.effect == 'base':
-            self.current_animation = None
-        elif request.effect in ('', 'solid'):
-            self.current_animation = Solid(self.pixels, color)
-        elif request.effect =='cycle':
-            self.animation_duration = request.duration
-            self.current_animation = ColorCycle(self.pixels, 0.05)
-        elif request.effect =='blink':
-            self.animation_duration = request.duration
-            self.current_animation = Blink(self.pixels, 0.05, color)
-        elif request.effect =='pulse':
-            self.animation_duration = request.duration
-            self.current_animation = Pulse(self.pixels, 0.05, color)
-        elif request.effect =='chase':
-            self.animation_duration = request.duration
-            self.current_animation = Chase(self.pixels, 0.05, color)
-        elif request.effect =='comet':
-            self.animation_duration = request.duration
-            self.current_animation = Comet(self.pixels, 0.05, color)
-        elif request.effect == 'rainbow':
-            self.animation_duration = request.duration
-            self.current_animation = Rainbow(self.pixels, 0.05)
-        elif request.effect =='rainbow_chase':
-            self.animation_duration = request.duration
-            self.current_animation = RainbowChase(self.pixels, 0.05)
-        elif request.effect =='rainbow_comet':
-            self.animation_duration = request.duration
-            self.current_animation = RainbowComet(self.pixels, 0.05, 3)
+        if effect == 'base':
+            self.current_animation = BASE_COLOR_ENTRY
+        elif effect in ('', 'solid'):
+            self.current_animation = AnimationEntry(Solid(self.pixels, color), duration)
+        elif effect =='cycle':
+            self.current_animation = AnimationEntry(ColorCycle(self.pixels, 0.05), duration)
+        elif effect =='blink':
+            self.current_animation = AnimationEntry(Blink(self.pixels, 0.05, color), duration)
+        elif effect =='pulse':
+            self.current_animation = AnimationEntry(Pulse(self.pixels, 0.05, color), duration)
+        elif effect =='chase':
+            self.current_animation = AnimationEntry(Chase(self.pixels, 0.05, color), duration)
+        elif effect =='comet':
+            self.current_animation = AnimationEntry(Comet(self.pixels, 0.05, color), duration)
+        elif effect == 'rainbow':
+            self.current_animation = AnimationEntry(Rainbow(self.pixels, 0.05), duration)
+        elif effect =='rainbow_chase':
+            self.current_animation = AnimationEntry(RainbowChase(self.pixels, 0.05), duration)
+        elif effect =='rainbow_comet':
+            self.current_animation = AnimationEntry(RainbowComet(self.pixels, 0.05, 3), duration)
         else:
             response.success = False
             response.message = f'Unknown effect: \"{request.effect}\"'
@@ -135,7 +131,8 @@ class LEDStripNode(Node):
         while True:
             if self.animation_changed.is_set():
                 self.animation_changed.clear()
-                animation = self.current_animation
+                start_time = time.time()
+                animation, duration = self.current_animation
 
             if animation is not None:
                 animation.animate()
@@ -144,9 +141,9 @@ class LEDStripNode(Node):
                 self.pixels.show()
             
             if isinstance(animation, Solid) or animation is None:
-                self.animation_changed.wait(self.animation_duration)
-            elif (time.time() - self._animation_start_time) >= self.animation_duration:
-                self.current_animation = None
+                self.animation_changed.wait(duration)
+            elif duration is not None and (time.time() - start_time) >= duration:
+                self.current_animation = BASE_COLOR_ENTRY
 
 
 def main(args=None):
