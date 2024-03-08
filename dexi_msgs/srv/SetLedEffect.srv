@@ -1,9 +1,15 @@
 string effect
+float32 speed
 uint8 r
 uint8 g
 uint8 b
+bool reverse
+uint8 size
 uint8 brightness
+
 float32 duration
+uint16 iterations
+
 uint8 priority
 bool base 
 ---
