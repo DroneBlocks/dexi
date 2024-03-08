@@ -1,10 +1,16 @@
-import time
 import math
-from typing import Any, NamedTuple
+import time
 from threading import Thread, Event
+from typing import Any, Callable, NamedTuple
 
 import rclpy
 from rclpy.node import Node
+
+from dexi_msgs.srv import SetLedEffect
+
+from dexi_led_strip.util import SPI, run_anim_until_done
+from dexi_led_strip.neopixel_ring_spi import NeoPixelRing_SPI
+from dexi_led_strip.channel_wrap_animation import ChannelWrapAnim
 
 from adafruit_led_animation.animation import Animation
 from adafruit_led_animation.animation.solid import Solid
@@ -17,11 +23,10 @@ from adafruit_led_animation.animation.rainbow import Rainbow
 from adafruit_led_animation.animation.rainbowchase import RainbowChase
 from adafruit_led_animation.animation.rainbowcomet import RainbowComet
 
-from dexi_msgs.srv import SetLedEffect
+RGBColor = tuple[int, int, int]
 
-from dexi_led_strip.util import SPI, run_anim_until_done
-from dexi_led_strip.neopixel_ring_spi import NeoPixelRing_SPI
-from dexi_led_strip.channel_wrap_animation import ChannelWrapAnim
+BOOT_ANIM_SPEED = 0.05
+CHASE_SPACING = 3
 
 
 def ensure_non_zero(value: float | int, default: Any = None) -> float | int | Any:
@@ -30,12 +35,64 @@ def ensure_non_zero(value: float | int, default: Any = None) -> float | int | An
     return value
 
 
+class AnimationInfo(NamedTuple):
+    """
+    Time in seconds between updates (lower is faster)
+    """
+    speed: float
+    """
+    RGB color (0-255)
+    """
+    color: RGBColor
+    """
+    Reverse the direction of the animation
+    """
+    reverse: bool
+    """
+    Length or size in pixels of a trail or line
+    """
+    size: int
+
+
 class AnimationEntry(NamedTuple):
     animation: Animation
-    duration: float | int
+    """
+    Strip brightness when displaying the effect (0-1)
+    """
+    brightness: float | None = None
+    """
+    Duration in seconds before stopping the effect (s)
+    """
+    duration: float | None = None
+    """
+    Number of full iterations before stopping the effect
+    """
+    iterations: int | None = None
 
 
-BASE_COLOR_ENTRY = AnimationEntry(None, None)
+"""
+This is the dictionary where the service callback looks up animation names.
+It should get a function that builds the animation.
+The function will be passed a Pixelbuf object, and an AnimationInfo object
+and should return the Animation object.
+"""
+ANIMATION_LOOKUP: dict[str, Callable[[NeoPixelRing_SPI, AnimationInfo], Animation]] = {
+    'base': lambda _, _1: None,
+
+    '': lambda pixels, info: Solid(pixels, info.color),
+    'solid': lambda pixels, info: Solid(pixels, info.color),
+
+    'cycle': lambda pixels, info: ColorCycle(pixels, info.speed),
+    'blink': lambda pixels, info: Blink(pixels, info.speed, info.color),
+    'pulse': lambda pixels, info: Pulse(pixels, info.speed, info.color),
+    'chase': lambda pixels, info: Chase(pixels, info.speed, info.color, size=info.size, spacing=CHASE_SPACING, reverse=info.reverse),
+    'comet': lambda pixels, info: Comet(pixels, info.speed, info.color, tail_length=max(0, info.size - 1), reverse=info.reverse, ring=True),
+    'rainbow': lambda pixels, info: Rainbow(pixels, info.speed, period=5, step=1 * (-1 if info.reverse else 1)),
+    'rainbow_chase': lambda pixels, info: RainbowChase(pixels, info.speed, size=info.size, spacing=CHASE_SPACING, reverse=info.reverse, step=8),
+    'rainbow_comet': lambda pixels, info: RainbowComet(pixels, info.speed, tail_length=max(0, info.size - 1), reverse=info.reverse, ring=True),
+
+    'channel_wrap': lambda pixels, info: ChannelWrapAnim(pixels, info.speed)
+}
 
 
 class LEDStripNode(Node):
@@ -69,8 +126,7 @@ class LEDStripNode(Node):
 
         self.base_color = [0] * channel_count
 
-        self._current_animation = None
-        self._animation_start_time = -1
+        self._current_animation = AnimationEntry(None)
         self.animation_changed = Event()
 
         self.update_thread = Thread(target=self.update_loop, daemon=True)
@@ -84,66 +140,78 @@ class LEDStripNode(Node):
     @current_animation.setter
     def current_animation(self, new_animation: AnimationEntry) -> None:
         self._current_animation = new_animation
-        self._animation_start_time = time.time()
         self.animation_changed.set()
 
     def play_boot_anim(self) -> None:
         if not self.update_thread.is_alive():
             self.pixels.fill(0)
-            boot_anim = ChannelWrapAnim(self.pixels, 0.05)
+            boot_anim = ChannelWrapAnim(self.pixels, BOOT_ANIM_SPEED)
             run_anim_until_done(boot_anim)
 
     def set_callback(self, request: SetLedEffect.Request, response: SetLedEffect.Response) -> SetLedEffect.Response:
-        # ToDo: add speed and argument to msg
-        duration = ensure_non_zero(request.duration)
+        # ToDo: add iterations, speed, reverse, and size to msg
         effect = request.effect
         color = request.r, request.g, request.b
-        if effect == 'base':
-            self.current_animation = BASE_COLOR_ENTRY
-        elif effect in ('', 'solid'):
-            self.current_animation = AnimationEntry(Solid(self.pixels, color), duration)
-        elif effect =='cycle':
-            self.current_animation = AnimationEntry(ColorCycle(self.pixels, 0.05), duration)
-        elif effect =='blink':
-            self.current_animation = AnimationEntry(Blink(self.pixels, 0.05, color), duration)
-        elif effect =='pulse':
-            self.current_animation = AnimationEntry(Pulse(self.pixels, 0.05, color), duration)
-        elif effect =='chase':
-            self.current_animation = AnimationEntry(Chase(self.pixels, 0.05, color), duration)
-        elif effect =='comet':
-            self.current_animation = AnimationEntry(Comet(self.pixels, 0.05, color), duration)
-        elif effect == 'rainbow':
-            self.current_animation = AnimationEntry(Rainbow(self.pixels, 0.05), duration)
-        elif effect =='rainbow_chase':
-            self.current_animation = AnimationEntry(RainbowChase(self.pixels, 0.05), duration)
-        elif effect =='rainbow_comet':
-            self.current_animation = AnimationEntry(RainbowComet(self.pixels, 0.05, 3), duration)
+        brightness = ensure_non_zero(equest.brightness)
+        duration = ensure_non_zero(request.duration)
+        iterations = ensure_non_zero(0.0)
+        if effect in ANIMATION_LOOKUP:
+            animation = ANIMATION_LOOKUP[effect](self.pixels, AnimationInfo(0.05, color, False, 3))
+            self.current_animation = AnimationEntry(animation, brightness, duration, iterations)
+
+            response.success = True
+            response.message = 'Success'
         else:
             response.success = False
             response.message = f'Unknown effect: \"{request.effect}\"'
-            return response
-        response.success = True
-        response.message = 'Success'
+
         return response
 
     def update_loop(self) -> None:
-        animation = self.current_animation
+        iter_event = Event()
+
+        start_time: float = -1.0
+        animation: Animation | None = None
+        brightness: float | None = None
+        duration: float | None = None
+        iterations: int | None = None
+
+        self.animation_changed, set()
         while True:
             if self.animation_changed.is_set():
                 self.animation_changed.clear()
+
                 start_time = time.time()
-                animation, duration = self.current_animation
+                animation, brightness, duration, iterations = self.current_animation
+
+                if animation is not None:
+                    animation.add_cycle_complete_receiver(lambda _: iter_event.set())
+
+                if brightness is not None:
+                    self.pixels.brightness = brightness
+
+                self.pixels.fill(self.base_color)
+
+                iter_event.clear()
 
             if animation is not None:
                 animation.animate()
+
+                if iter_event.is_set():
+                    iter_event.clear()
+                    if iterations is not None:
+                        iterations -= 1
             else:
                 self.pixels.fill(self.base_color)
                 self.pixels.show()
-            
-            if isinstance(animation, Solid) or animation is None:
+
+            time_done = duration is not None and (time.time() - start_time) >= duration
+            iter_done = iterations is not None and iterations <= 0
+
+            if animation is None or isinstance(animation, Solid):
                 self.animation_changed.wait(duration)
-            elif duration is not None and (time.time() - start_time) >= duration:
-                self.current_animation = BASE_COLOR_ENTRY
+            elif time_done or iter_done:
+                self.current_animation = AnimationEntry(None)
 
 
 def main(args=None):
