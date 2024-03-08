@@ -26,6 +26,8 @@ from adafruit_led_animation.animation.rainbowcomet import RainbowComet
 RGBColor = tuple[int, int, int]
 
 BOOT_ANIM_SPEED = 0.05
+DEFAULT_ANIM_SPEED = 0.05
+DEFAULT_ANIM_SIZE = 3
 CHASE_SPACING = 3
 
 
@@ -85,11 +87,15 @@ ANIMATION_LOOKUP: dict[str, Callable[[NeoPixelRing_SPI, AnimationInfo], Animatio
     'cycle': lambda pixels, info: ColorCycle(pixels, info.speed),
     'blink': lambda pixels, info: Blink(pixels, info.speed, info.color),
     'pulse': lambda pixels, info: Pulse(pixels, info.speed, info.color),
-    'chase': lambda pixels, info: Chase(pixels, info.speed, info.color, size=info.size, spacing=CHASE_SPACING, reverse=info.reverse),
-    'comet': lambda pixels, info: Comet(pixels, info.speed, info.color, tail_length=max(0, info.size - 1), reverse=info.reverse, ring=True),
+    'chase': lambda pixels, info: Chase(pixels, info.speed, info.color, info.size,
+                                        spacing=CHASE_SPACING, reverse=info.reverse),
+    'comet': lambda pixels, info: Comet(pixels, info.speed, info.color, tail_length=max(0, info.size - 1),
+                                        reverse=info.reverse, ring=True),
     'rainbow': lambda pixels, info: Rainbow(pixels, info.speed, period=5, step=1 * (-1 if info.reverse else 1)),
-    'rainbow_chase': lambda pixels, info: RainbowChase(pixels, info.speed, size=info.size, spacing=CHASE_SPACING, reverse=info.reverse, step=8),
-    'rainbow_comet': lambda pixels, info: RainbowComet(pixels, info.speed, tail_length=max(0, info.size - 1), reverse=info.reverse, ring=True),
+    'rainbow_chase': lambda pixels, info: RainbowChase(pixels, info.speed, size=info.size,
+                                                       spacing=CHASE_SPACING, reverse=info.reverse, step=8),
+    'rainbow_comet': lambda pixels, info: RainbowComet(pixels, info.speed, tail_length=max(0, info.size - 1),
+                                                       everse=info.reverse, ring=True),
 
     'channel_wrap': lambda pixels, info: ChannelWrapAnim(pixels, info.speed)
 }
@@ -149,14 +155,18 @@ class LEDStripNode(Node):
             run_anim_until_done(boot_anim)
 
     def set_callback(self, request: SetLedEffect.Request, response: SetLedEffect.Response) -> SetLedEffect.Response:
-        # ToDo: add iterations, speed, reverse, and size to msg
         effect = request.effect
+        speed = ensure_non_zero(request.speed, DEFAULT_ANIM_SPEED)
         color = request.r, request.g, request.b
+        size = ensure_non_zero(request.size, DEFAULT_ANIM_SIZE)
+        info = AnimationInfo(speed, color, request.reverse, size)
         brightness = ensure_non_zero(request.brightness)
+
         duration = ensure_non_zero(request.duration)
-        iterations = ensure_non_zero(0.0)
+        iterations = ensure_non_zero(request.iterations)
+
         if effect in ANIMATION_LOOKUP:
-            animation = ANIMATION_LOOKUP[effect](self.pixels, AnimationInfo(0.05, color, False, 3))
+            animation = ANIMATION_LOOKUP[effect](self.pixels, info)
             self.current_animation = AnimationEntry(animation, brightness, duration, iterations)
 
             response.success = True
