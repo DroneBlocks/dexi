@@ -152,7 +152,7 @@ class LEDStripNode(Node):
         # ToDo: add iterations, speed, reverse, and size to msg
         effect = request.effect
         color = request.r, request.g, request.b
-        brightness = ensure_non_zero(equest.brightness)
+        brightness = ensure_non_zero(request.brightness)
         duration = ensure_non_zero(request.duration)
         iterations = ensure_non_zero(0.0)
         if effect in ANIMATION_LOOKUP:
