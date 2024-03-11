@@ -8,6 +8,7 @@
   <license>MIT</license>
 
   <depend>rclpy</depend>
+  <depend>python-rpi.gpio-pip</depend>
   <depend>python3-adafruit-blinka-pip</depend>
 
   <exec_depend>dexi_msgs</exec_depend>
