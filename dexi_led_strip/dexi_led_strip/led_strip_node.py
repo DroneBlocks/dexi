@@ -202,24 +202,24 @@ class LEDStripNode(Node):
             if self.animation_changed.is_set():
                 self.animation_changed.clear()
 
-                if priority is None or max(self.animation_queue.queue)[0] >= priority:
+                with self.animation_queue.mutex:
+                    has_greater_priority = len(self.animation_queue.queue) > 0 and max(self.animation_queue.queue)[0] >= priority
+                if priority is None or has_greater_priority:
                     start_time = time.time()
-                try:
-                    priority, entry = self.animation_queue.get_nowait()
-                except Empty:
-                    priority = None
-                    entry = AnimationEntry(None)
-                animation, brightness, duration, iterations = entry
+                    try:
+                        priority, entry = self.animation_queue.get_nowait()
+                    except Empty:
+                        priority = None
+                        entry = AnimationEntry(None)
+                    animation, brightness, duration, iterations = entry
 
-                if iterations is not None:
-                    animation.add_cycle_complete_receiver(lambda _: iter_event.set())
+                    if iterations is not None:
+                        animation.add_cycle_complete_receiver(lambda _: iter_event.set())
 
-                if brightness is not None:
-                    self.pixels.brightness = brightness
+                    if brightness is not None:
+                        self.pixels.brightness = brightness
 
-                self.pixels.fill(self.base_color)
-
-                iter_event.clear()
+                    self.pixels.fill(self.base_color)
 
             if animation is not None:
                 animation.animate()
