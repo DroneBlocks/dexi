@@ -203,11 +203,11 @@ class LEDStripNode(Node):
                 self.animation_changed.clear()
 
                 with self.animation_queue.mutex:
-                    has_greater_priority = len(self.animation_queue.queue) > 0 and max(self.animation_queue.queue)[0] >= priority
-                if priority is None or has_greater_priority:
+                    queue_list = list(self.animation_queue.queue)
+                if priority is None or (len(queue_list) > 0 and max(queue_list)[0] >= priority):
                     start_time = time.time()
                     try:
-                        priority, entry = self.animation_queue.get_nowait()
+                        priority, entry = self.animation_queue.get(block=False)
                     except Empty:
                         priority = None
                         entry = AnimationEntry(None)
@@ -237,8 +237,10 @@ class LEDStripNode(Node):
 
             if animation is None or isinstance(animation, Solid):
                 self.animation_changed.wait(duration)
+                priority = None
             elif time_done or iter_done:
                 self.animation_changed.set()
+                priority = None
 
 
 def main(args=None):
