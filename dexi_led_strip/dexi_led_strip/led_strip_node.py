@@ -1,5 +1,7 @@
+import sys
 import math
 import time
+from queue import PriorityQueue, Empty
 from threading import Thread, Event
 from typing import Any, Callable, NamedTuple
 
@@ -57,7 +59,7 @@ class AnimationInfo(NamedTuple):
 
 
 class AnimationEntry(NamedTuple):
-    animation: Animation
+    animation: Animation | None
     """
     Strip brightness when displaying the effect (0-1)
     """
@@ -132,7 +134,7 @@ class LEDStripNode(Node):
 
         self.base_color = [0] * channel_count
 
-        self._current_animation = AnimationEntry(None)
+        self.animation_queue = PriorityQueue()
         self.animation_changed = Event()
 
         self.update_thread = Thread(target=self.update_loop, daemon=True)
@@ -165,9 +167,16 @@ class LEDStripNode(Node):
         duration = ensure_non_zero(request.duration)
         iterations = ensure_non_zero(request.iterations)
 
+        priority = -request.priority
+
         if effect in ANIMATION_LOOKUP:
+            if priority > 0:
+                with self.animation_queue.mutex:
+                    self.animation_queue.queue.clear()
+
             animation = ANIMATION_LOOKUP[effect](self.pixels, info)
-            self.current_animation = AnimationEntry(animation, brightness, duration, iterations)
+            self.animation_queue.put((priority, AnimationEntry(animation, brightness, duration, iterations)))
+            self.animation_changed.set()
 
             response.success = True
             response.message = 'Success'
@@ -180,21 +189,29 @@ class LEDStripNode(Node):
     def update_loop(self) -> None:
         iter_event = Event()
 
+        priority: int | None = None
+
         start_time: float = -1.0
         animation: Animation | None = None
         brightness: float | None = None
         duration: float | None = None
         iterations: int | None = None
 
-        self.animation_changed, set()
+        self.animation_changed.set()
         while True:
             if self.animation_changed.is_set():
                 self.animation_changed.clear()
 
-                start_time = time.time()
-                animation, brightness, duration, iterations = self.current_animation
+                if priority is None or max(self.animation_queue.queue)[0] >= priority:
+                    start_time = time.time()
+                try:
+                    priority, entry = self.animation_queue.get_nowait()
+                except Empty:
+                    priority = None
+                    entry = AnimationEntry(None)
+                animation, brightness, duration, iterations = entry
 
-                if animation is not None:
+                if iterations is not None:
                     animation.add_cycle_complete_receiver(lambda _: iter_event.set())
 
                 if brightness is not None:
@@ -221,7 +238,7 @@ class LEDStripNode(Node):
             if animation is None or isinstance(animation, Solid):
                 self.animation_changed.wait(duration)
             elif time_done or iter_done:
-                self.current_animation = AnimationEntry(None)
+                self.animation_changed.set()
 
 
 def main(args=None):
