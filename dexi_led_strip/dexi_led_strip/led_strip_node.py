@@ -204,7 +204,7 @@ class LEDStripNode(Node):
 
                 with self.animation_queue.mutex:
                     queue_list = list(self.animation_queue.queue)
-                if priority is None or (len(queue_list) > 0 and max(queue_list)[0] >= priority):
+                if priority is None or (len(queue_list) > 0 and min(queue_list)[0] <= priority):
                     start_time = time.time()
                     try:
                         priority, entry = self.animation_queue.get(block=False)
