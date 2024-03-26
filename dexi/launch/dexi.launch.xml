@@ -1,14 +1,16 @@
 <launch>
+    <let name="rosbridge" value="false" />
+    <let name="droneblocks" value="true" />
     <let name="sitl" value="false" />
     <let name="led" value="true" />
     <let name="offboard" value="false" />
     <let name="camera" value="false" />
 
     <!-- rosbridge server -->
-    <include file="$(find-pkg-share rosbridge_server)/launch/rosbridge_websocket_launch.xml" />
+    <include file="$(find-pkg-share rosbridge_server)/launch/rosbridge_websocket_launch.xml" if="$(var rosbridge)" />
 
     <!-- DroneBlocks -->
-    <include file="$(find-pkg-share droneblocks)/launch/droneblocks.launch.xml" />
+    <include file="$(find-pkg-share droneblocks)/launch/droneblocks.launch.xml" if="$(var droneblocks)" />
 
     <!-- LED -->
     <include file="$(find-pkg-share dexi_py)/launch/led.launch.yaml" if="$(var led)" />

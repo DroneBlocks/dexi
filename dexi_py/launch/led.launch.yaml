@@ -1,6 +1,11 @@
 launch:
-- node:
-    pkg: "dexi_py"
-    exec: "led_service"
-    name: "led_service"
-    namespace: "dexi"
+  - node:
+      pkg: "dexi_py"
+      exec: "led_service"
+      name: "led_service"
+      namespace: "dexi"
+  - node:
+      pkg: "dexi_py"
+      exec: "led_mock_service"
+      name: "led_mock_service"
+      namespace: "dexi"

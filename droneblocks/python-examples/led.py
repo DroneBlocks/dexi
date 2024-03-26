@@ -5,7 +5,7 @@ from time import sleep
 rclpy.init()
 node = rclpy.create_node('temp')
 
-set_led = node.create_client(SetLED, '/dexi/set_led')
+set_led = node.create_client(SetLED, '/dexi/set_led_mock')
 
 while not set_led.wait_for_service(timeout_sec=1.0):
   node.get_logger().info('service not available, waiting again...')

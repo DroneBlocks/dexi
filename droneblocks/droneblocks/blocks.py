@@ -228,10 +228,23 @@ def main(args=None):
     droneblocks.create_service(Trigger, '~/stop', droneblocks.stop)
     droneblocks.create_service(Load, '~/load', droneblocks.load)
     droneblocks.create_service(Store, '~/store', droneblocks.store)
-    droneblocks.get_logger().info('Ready')
+    droneblocks.get_logger().info('DroneBlocks node is ready')
 
-    rclpy.spin(droneblocks)
+    executor = rclpy.executors.MultiThreadedExecutor()
+    executor.add_node(droneblocks)
+    executor_thread = threading.Thread(target=executor.spin, daemon=True)
+    executor_thread.start()
+
+    frequency = droneblocks.create_rate(10) # 10 Hz
+
+    try:
+        while rclpy.ok():
+            frequency.sleep()
+    except KeyboardInterrupt:
+        pass
+
     rclpy.shutdown()
+    executor_thread.join()
 
 if __name__ == '__main__':
     main()
