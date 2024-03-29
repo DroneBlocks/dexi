@@ -1,6 +1,7 @@
 [submodule "micro-ROS-Agent"]
 	path = micro-ROS-Agent
 	url = https://github.com/micro-ROS/micro-ROS-Agent.git
+	branch = humble
 [submodule "px4_msgs"]
 	path = px4_msgs
 	url = https://github.com/PX4/px4_msgs
