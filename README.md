@@ -18,18 +18,23 @@ echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 ```
 
-# Create the workspace
+# Create the workspace for development
 
 Create a workspace, clone the DEXI repo into it, and run a colcon build:
 
 ```bash
 mkdir -p ~/dexi_ws/src
+
 cd ~/dexi_ws/src
 
-git clone https://github.com/DroneBlocks/DEXI.git --recurse-submodules
+git clone -b develop https://github.com/DroneBlocks/dexi.git
+
+git submodule update --init --remote --recursive
 
 cd ..
+
 rosdep install --from-paths src -y --ignore-src
+
 colcon build --symlink-install
 ```
 
@@ -38,7 +43,7 @@ colcon build --symlink-install
 Run the install script to set the service to start on boot:
 
 ```bash
-bash ~/dexi_ws/src/DEXI/dexi/scripts/install.bash
+bash ~/dexi_ws/src/dexi/dexi/scripts/install.bash
 ```
 
 # Camera
