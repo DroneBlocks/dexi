@@ -1,6 +1,4 @@
-# Setup
-
-## ROS2
+# Setup ROS2
 
 ```bash
 # Setup apt repos
@@ -41,7 +39,7 @@ Add the following to the end of the line in /boot/cmdline.txt to increase the SP
 spidev.bufsiz=32768
 ```
 
-# Create the workspace
+# Create the workspace for development
 
 Create a workspace, clone the DEXI repo into it, and run a colcon build:
 
@@ -49,7 +47,9 @@ Create a workspace, clone the DEXI repo into it, and run a colcon build:
 mkdir -p ~/dexi_ws/src
 cd ~/dexi_ws/src
 
-git clone https://github.com/DroneBlocks/DEXI.git --recurse-submodules
+git clone -b develop https://github.com/DroneBlocks/dexi.git
+
+git submodule update --init --remote --recursive
 
 # Install packages for led strips
 pip3 install adafruit-circuitpython-neopixel-spi adafruit-circuitpython-led-animation
@@ -64,7 +64,7 @@ colcon build --symlink-install
 Run the install script to set the service to start on boot:
 
 ```bash
-bash ~/dexi_ws/src/DEXI/dexi/scripts/install.bash
+bash ~/dexi_ws/src/dexi/dexi/scripts/install.bash
 ```
 
 # Camera
@@ -80,13 +80,6 @@ and make sure to comment out the following line:
 ```
 #camera_auto_detect=1
 ```
-
-# Micro DDS Client
-
-### Run
-
-- source install/setup.bash
-- MicroXRCEAgent serial --dev /dev/ttyAMA0 -b 921600
 
 # MAVROS and SITL
 

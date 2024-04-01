@@ -25,7 +25,6 @@ setup(
         'console_scripts': [
             'led_service = dexi_py.led:main',
             'offboard_node = dexi_py.offboard:main',
-            'processes = dexi_py.processes:main',
             'led_mock_service = dexi_py.led_mock:main'
         ],
     },
