@@ -1,5 +1,5 @@
 <launch>
-    <let name="rosbridge" value="false" />
+    <let name="rosbridge" value="true" />
     <let name="droneblocks" value="true" />
     <let name="sitl" value="false" />
     <let name="led" value="true" />

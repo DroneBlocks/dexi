@@ -12,35 +12,31 @@ and make sure to comment out the following line:
 #camera_auto_detect=1
 ```
 
-### Build
+## For ARK CM4:
 
-Dependencies
+Edit /boot/firmware/config.txt 
 
 ```
-sudo apt-get install build-essential
-sudo apt-get install libboost-all-dev
+dtoverlay=imx219,cam0
+dtoverlay=imx219,cam1
 ```
 
-- cd ~/ros2_ws/src
-- git clone https://github.com/Kapernikov/cv_camera
-- cd ~/ros2_ws
-- rosdep install --from-paths src -y --rosdistro humble --ignore-src
-- colcon build --packages-select cv_camera
+```
+sudo apt install ros-humble-camera-ros
+```
+
+Reboot.
 
 ### Run
 
 - source install/setup.bash
-- ros2 run cv_camera cv_camera_node
+- ros2 run camera_ros camera_node --ros-args -p width:=640 -p height:=480
 
 # Web video server
 
 ### Build
 
-- cd ~/ros2_ws/src
-- git clone https://github.com/RobotWebTools/web_video_server/
-- cd web_video_server
-- git checkout ros2
-- cd ~/ros2_ws
+- cd ~/dexi_ws/src
 - rosdep install --from-paths src -y --rosdistro humble --ignore-src
 - colcon build --packages-select web_video_server
 
