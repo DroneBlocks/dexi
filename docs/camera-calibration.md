@@ -93,13 +93,3 @@ average rate: 30.025
 average rate: 30.004
         min: 0.028s max: 0.039s std dev: 0.00284s window: 184
 ```
-
-
-
-
-
-
-
-
-
-
