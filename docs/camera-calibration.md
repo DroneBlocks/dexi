@@ -59,7 +59,7 @@ Click save and a calibrationdata.tar.gz will be saved to the /tmp folder on your
 Now run the camera node and you should a nice image with a good frame rate.
 
 ```
- ros2 run cv_camera cv_camera_node --ros-args -r __ns:=/camera -p camera_info_url:=file:///home/droneblocks/dexi_ws/ost.yaml
+ ros2 run cv_camera cv_camera_node --ros-args -r __ns:=/camera -p camera_info_url:=file:///home/droneblocks/dexi_ws/src/dexi/camera_info/main_camera_2.1.yaml
  ```
 
  NOTE: we need to find the best place to put this file. The calibration should only need to be run once for all cameras of a certain type, in our case cam v2.1.
@@ -67,7 +67,7 @@ Now run the camera node and you should a nice image with a good frame rate.
  When running the node you should hopefully see the param file loaded properly:
 
  ```
- [INFO] [1714425307.072069671] [camera.cv_camera]: camera calibration URL: file:///home/droneblocks/dexi_ws/ost.yaml
+ [INFO] [1714425307.072069671] [camera.cv_camera]: camera calibration URL: file:///home/droneblocks/dexi_ws/src/dexi/camera_info/main_camera_2.1.yaml
  ```
 
  You can see the params being published at the following topic:
