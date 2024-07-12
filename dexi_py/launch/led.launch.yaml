@@ -9,3 +9,8 @@ launch:
       exec: "led_mock_service"
       name: "led_mock_service"
       namespace: "dexi"
+  - node:
+      pkg: "dexi_py"
+      exec: "led_flight_mode_status"
+      name: "flight_mode_status"
+      namespace: "dexi"
