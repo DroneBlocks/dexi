@@ -11,6 +11,6 @@ launch:
       namespace: "dexi"
   - node:
       pkg: "dexi_py"
-      exec: "led_flight_mode_status"
+      exec: "flight_mode_status"
       name: "flight_mode_status"
       namespace: "dexi"
