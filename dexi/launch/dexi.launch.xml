@@ -1,9 +1,9 @@
 <launch>
-    <let name="rosbridge" value="true" />
-    <let name="droneblocks" value="true" />
+    <let name="rosbridge" value="false" />
+    <let name="droneblocks" value="false" />
     <let name="sitl" value="false" />
     <let name="led" value="true" />
-    <let name="offboard" value="false" />
+    <let name="offboard" value="true" />
     <let name="camera" value="false" />
 
     <!-- rosbridge server -->
