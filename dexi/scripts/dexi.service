@@ -3,7 +3,7 @@ Description="A service to run the DEXI ros launch file at boot"
 
 [Service]
 Type=simple
-User=pi
+User=root
 ExecStart=/home/dexi/dexi_ws/src/dexi/scripts/start.bash
 StandardOutput=syslog
 Restart=on-failure
