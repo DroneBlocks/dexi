@@ -75,10 +75,10 @@ class LEDFlightModeStatus(Node):
                 solid = Solid(self.pixels, color=WHITE)
                 solid.animate()
             elif self.current_flight_mode == FlightMode.ALTITUDE:
-                solid = Solid(self.pixels, color=GREEN)
+                solid = Solid(self.pixels, color=YELLOW)
                 solid.animate()
             elif self.current_flight_mode == FlightMode.POSITION:
-                solid = Solid(self.pixels, color=CYAN)
+                solid = Solid(self.pixels, color=GREEN)
                 solid.animate()
 
             self.previous_flight_mode = self.current_flight_mode
