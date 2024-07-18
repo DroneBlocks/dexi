@@ -28,12 +28,31 @@ from adafruit_led_animation.color import (
     BLACK
 )
 
+# These map to PX4 msgs VechicleStatus nav_state
 class FlightMode(IntEnum):
-    DEFAULT = 0
-    STABILIZED = 15
+    MANUAL = 0
     ALTITUDE = 1
     POSITION = 2
+    MISSION = 3
     HOLD = 4
+    RTL = 5
+    SLOW = 6
+    FREE5 = 7
+    FREE4 = 8
+    FREE3 = 9
+    ACRO = 10
+    FREE2 = 11
+    DESCEND = 12
+    TERMINATION = 13
+    OFFBOARD = 14
+    STABILIZED = 15
+    FREE1 = 16
+    TAKEOFF = 17
+    LAND = 18
+    TARGET = 19
+    PRECLAND = 20
+    ORBIT = 21
+    VTOL_TAKOFF = 22
 
 class LEDFlightModeStatus(Node):
 
@@ -42,8 +61,8 @@ class LEDFlightModeStatus(Node):
         self.pixel_pin = board.D12
         self.num_pixels = 45
         self.pixel_order = neopixel.GRB
-        self.previous_flight_mode = FlightMode.DEFAULT
-        self.current_flight_mode = FlightMode.DEFAULT
+        self.previous_flight_mode = FlightMode.MANUAL
+        self.current_flight_mode = FlightMode.MANUAL
         self.pixels = neopixel.NeoPixel(self.pixel_pin, self.num_pixels, brightness=0.2, auto_write=False, pixel_order=self.pixel_order)
         
         solid = Solid(self.pixels, color=BLACK)
@@ -64,10 +83,6 @@ class LEDFlightModeStatus(Node):
 
     def listener_callback(self, msg):
 
-        if(msg.nav_state not in iter(FlightMode)):
-            self.get_logger().info('FLIGHT MODE NOT FOUND')
-            return
-
         self.current_flight_mode = FlightMode(msg.nav_state)
 
         if(self.current_flight_mode != self.previous_flight_mode):
@@ -79,6 +94,10 @@ class LEDFlightModeStatus(Node):
                 solid.animate()
             elif self.current_flight_mode == FlightMode.POSITION:
                 solid = Solid(self.pixels, color=GREEN)
+                solid.animate()
+            else:
+                self.get_logger().info('FLIGHT MODE COLOR NOT YET SUPPORTED')
+                solid = Solid(self.pixels, color=BLACK)
                 solid.animate()
 
             self.previous_flight_mode = self.current_flight_mode
