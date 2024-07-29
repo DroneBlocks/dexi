@@ -12,3 +12,6 @@
 	path = web_video_server
 	url = https://github.com/RobotWebTools/web_video_server
 	branch = ros2
+[submodule "utilities/raspiApWlanScripts"]
+	path = utilities/raspiApWlanScripts
+	url = https://github.com/Autodrop3d/raspiApWlanScripts.git
