@@ -12,3 +12,6 @@
 	path = web_video_server
 	url = https://github.com/RobotWebTools/web_video_server
 	branch = ros2
+[submodule "px4-ros2-interface-lib"]
+	path = px4-ros2-interface-lib
+	url = https://github.com/dakejahl/px4-ros2-interface-lib.git
