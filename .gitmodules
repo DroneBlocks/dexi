@@ -15,3 +15,4 @@
 [submodule "px4-ros2-interface-lib"]
 	path = px4-ros2-interface-lib
 	url = https://github.com/dakejahl/px4-ros2-interface-lib
+	branch = pr_enhancements
