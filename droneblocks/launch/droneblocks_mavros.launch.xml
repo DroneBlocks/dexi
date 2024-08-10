@@ -1,0 +1,5 @@
+<launch>
+    <include file="$(find-pkg-share dexi)/launch/mavros_sitl.launch.xml" />
+    <node pkg="droneblocks" exec="droneblocks" output="screen" />
+    <node pkg="droneblocks" exec="offboard_bridge" output="screen" />
+</launch>

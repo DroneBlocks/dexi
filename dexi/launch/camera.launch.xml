@@ -1,0 +1,11 @@
+<launch>
+    <let name="apriltags" value="false" />
+
+    <node pkg="camera_ros" exec="camera_node" output="screen">
+        <param name="width" value="640" />
+        <param name="height" value="480" />
+        <remap from="image_raw" to="image_rect" />
+    </node>
+    <node pkg="web_video_server" exec="web_video_server" output="screen" />
+    <node pkg="apriltag_ros" exec="apriltag_node" output="screen" if="$(var apriltags)" />
+</launch>
