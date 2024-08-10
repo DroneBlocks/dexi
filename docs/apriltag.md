@@ -14,6 +14,8 @@ rosdep install --from-paths src -y --rosdistro humble --ignore-src
 
 colcon build --packages-select apriltag_msgs
 
-
-
 colcon build --packages-select apriltag_ros
+
+## Running the node standalone with default camera setup
+
+ros2 run apriltag_ros apriltag_node --ros-args -r image_rect:=/camera/image_raw
