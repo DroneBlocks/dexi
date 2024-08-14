@@ -65,7 +65,6 @@ class OffboardControl(Node):
 
     def vehicle_local_position_callback(self, vehicle_local_position):
         """Callback function for vehicle_local_position topic subscriber."""
-        print("vehicle_location_position_callback")
         self.vehicle_local_position = vehicle_local_position
 
     def vehicle_status_callback(self, vehicle_status):
@@ -110,7 +109,7 @@ class OffboardControl(Node):
         """Publish the trajectory setpoint."""
         msg = TrajectorySetpoint()
         msg.position = [self.x, self.y, self.z]
-        msg.yaw = 1.57079  # (90 degree)
+        msg.yaw = self.vehicle_local_position.heading  # Keep current heading
         msg.timestamp = int(self.get_clock().now().nanoseconds / 1000)
         self.trajectory_setpoint_publisher.publish(msg)
         self.get_logger().info(f"Publishing position setpoints {[self.x, self.y, self.z]}")
@@ -148,9 +147,9 @@ class OffboardControl(Node):
         if self.vehicle_local_position.z > self.takeoff_height and self.vehicle_status.nav_state == VehicleStatus.NAVIGATION_STATE_OFFBOARD:
             self.publish_position_setpoint()
 
-        elif self.vehicle_local_position.z <= self.takeoff_height:
-            self.land()
-            exit(0)
+        # elif self.vehicle_local_position.z <= self.takeoff_height:
+        #     self.land()
+        #     exit(0)
 
         if self.offboard_setpoint_counter < 11:
             self.offboard_setpoint_counter += 1

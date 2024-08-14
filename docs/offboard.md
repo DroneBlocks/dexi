@@ -40,4 +40,5 @@ ros2 launch dexi_py offboard.launch.xml
 ```
 ros2 topic pub /offboard/command std_msgs/String "data: 'takeoff'" -1
 ros2 topic pub /offboard/command std_msgs/String "data: 'land'" -1
+ros2 topic pub /offboard/move std_msgs/Float32 "data: 1.0" -1
 ```
