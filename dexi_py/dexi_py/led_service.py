@@ -1,16 +1,38 @@
 import rclpy
 from rclpy.node import Node
-from led_msgs.srv import SetLEDPixel
-from led_msgs.srv import SetLEDColor
+from led_msgs.srv import LEDPixelColor
+from led_msgs.srv import LEDRingColor
 import board
 import neopixel
+from enum import Enum
+
+from adafruit_led_animation.animation.solid import Solid
+from adafruit_led_animation.color import (
+    RED as red,
+    YELLOW as yellow,
+    ORANGE as orange,
+    GREEN as green,
+    TEAL as teal,
+    CYAN as cyan,
+    BLUE as blue,
+    PURPLE as purple,
+    MAGENTA as magenta,
+    WHITE as white,
+    BLACK as black,
+    GOLD as gold,
+    PINK as pink,
+    AQUA as aqua,
+    JADE as jade,
+    AMBER as amber,
+    OLD_LACE as old_lace
+)
 
 class LEDService(Node):
 
     def __init__(self):
         super().__init__('led_service')
-        self.led_service = self.create_service(SetLEDPixel, 'set_led_pixel', self.set_led_pixel_callback)
-        self.led_color_service = self.create_service(SetLEDColor, 'set_led_color', self.set_led_color_callback)
+        self.led_pixel_service = self.create_service(LEDPixelColor, '~/set_led_pixel_color', self.set_led_pixel_callback)
+        self.led_color_service = self.create_service(LEDRingColor, '~/set_led_ring_color', self.set_led_ring_callback)
         self.pixel_pin = board.D12
         self.num_pixels = 10
         self.pixel_order = neopixel.GRB
@@ -24,9 +46,18 @@ class LEDService(Node):
         response.success = True
         return response
 
-    def set_led_color_callback(self, request, response):
+    def set_led_ring_callback(self, request, response):
         self.get_logger().info(str(request))
-        response.success = True
+        try:
+            color = eval(request.color)
+            solid = Solid(self.pixels, color=color)
+            solid.animate()
+            response.success = True
+            response.message = "Successfully set LED ring color"
+        except:
+            response.success = False
+            response.message = "LED ring color not available"
+
         return response
 
     def rainbow(self):

@@ -22,7 +22,8 @@ sudo pip3 install rpi_ws281x
 ## Command Line test
 
 ```
-ros2 service call /dexi/set_led led_msgs/srv/SetLED "{index: 0, r: 0, g: 255, b: 0, brightness: 255}"
+ros2 service call /dexi/led_service/set_led_pixel_color led_msgs/srv/LEDPixelColor "{index: 0, r: 0, g: 255, b: 0}"
+ros2 service call /dexi/led_service/set_led_ring_color led_msgs/srv/LEDRingColor "{color: 'purple'}"
 ```
 
 # OLD
