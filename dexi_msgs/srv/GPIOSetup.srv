@@ -1,0 +1,6 @@
+# This service sets a GPIO as input or output
+uint8 pin # GPIO pin number
+string io # input or output
+---
+bool success   # True if the call succeeded
+string message # Error or informational message
