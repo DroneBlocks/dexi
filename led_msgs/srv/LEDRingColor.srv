@@ -1,0 +1,6 @@
+# This service sets all LEDs in the ring a specific color. Current options are:
+# red, yellow, orange, green, teal, cyan, blue, purple, magenta, white, black, gold, pink, aqua, jade, amber, old_lace
+string color
+---
+bool success
+string message

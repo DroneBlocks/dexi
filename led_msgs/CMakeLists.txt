@@ -27,8 +27,8 @@ find_package(rosidl_default_generators REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/LEDState.msg"
   "msg/LEDStateArray.msg"
-  "srv/SetLED.srv"
-  "srv/SetLEDs.srv"
+  "srv/LEDPixelColor.srv"
+  "srv/LEDRingColor.srv"
 )
 
 
