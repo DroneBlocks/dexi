@@ -1,6 +1,0 @@
-launch:
-  - node:
-      pkg: "dexi_py"
-      exec: "gpio_service"
-      name: "gpio_service"
-      namespace: "dexi"

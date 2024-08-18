@@ -1,0 +1,7 @@
+/dexi/gpio_writer_service:
+  ros__parameters:
+    gpio_outputs: [21, 23]
+
+/dexi/gpio_reader_service:
+  ros__parameters:
+    gpio_inputs: [22, 24]
