@@ -28,7 +28,8 @@ setup(
             'offboard_node = dexi_py.offboard:main',
             'led_mock_service = dexi_py.led_mock:main',
             'flight_mode_status = dexi_py.led_flight_mode_status:main',
-            'gpio_writer_service = dexi_py.gpio_writer_service:main'
+            'gpio_writer_service = dexi_py.gpio_writer_service:main',
+            'gpio_reader = dexi_py.gpio_reader:main'
         ],
     },
 )
