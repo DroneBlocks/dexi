@@ -1,19 +1,25 @@
 <launch>
-    <let name="rosbridge" value="false" />
+    <let name="rosbridge" value="true" />
     <let name="droneblocks" value="false" />
     <let name="sitl" value="false" />
     <let name="led" value="true" />
+    <let name="gpio" value="false" />
     <let name="offboard" value="true" />
     <let name="camera" value="true" />
 
     <!-- rosbridge server -->
-    <include file="$(find-pkg-share rosbridge_server)/launch/rosbridge_websocket_launch.xml" if="$(var rosbridge)" />
+    <include file="$(find-pkg-share rosbridge_server)/launch/rosbridge_websocket_launch.xml" if="$(var rosbridge)">
+        <arg name="port" value="9090" />
+    </include>
 
     <!-- DroneBlocks -->
     <include file="$(find-pkg-share droneblocks)/launch/droneblocks.launch.xml" if="$(var droneblocks)" />
 
     <!-- LED -->
     <include file="$(find-pkg-share dexi_py)/launch/led.launch.yaml" if="$(var led)" />
+
+    <!-- GPIO -->
+    <include file="$(find-pkg-share dexi_py)/launch/gpio.launch.py" if="$(var gpio)" />
 
     <!-- Offboard w/ MicroXRCEAgent -->
     <include file="$(find-pkg-share dexi_py)/launch/offboard.launch.xml" if="$(var offboard)" />

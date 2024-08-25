@@ -1,0 +1,6 @@
+# This service handles setting a pin high or low
+uint8 pin # GPIO pin number
+bool state # high or low
+---
+bool success   # True if the call succeeded
+string message # Error or informational message

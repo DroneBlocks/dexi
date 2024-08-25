@@ -36,6 +36,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/SetPosition.srv"
   "srv/SetYaw.srv"
   "srv/Store.srv"
+  "srv/GPIOSend.srv"
 )
 
 ament_package()
