@@ -19,7 +19,7 @@ ros2 launch dexi_py gpio.launch.yaml
 ## Command Line Test
 
 ```
-ros2 service call /dexi/gpio_writer_service/send_gpio_pin dexi_msgs/srv/GPIOSend "{pin: 21, state: 1}"
+ros2 service call /dexi/gpio_writer_service/write_gpio_21 dexi_msgs/srv/GPIOSend "{pin: 21, state: 1}"
 ```
 
 # GPIO for AVR

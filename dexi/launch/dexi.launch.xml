@@ -2,10 +2,10 @@
     <let name="rosbridge" value="true" />
     <let name="droneblocks" value="false" />
     <let name="sitl" value="false" />
-    <let name="led" value="false" />
-    <let name="gpio" value="true" />
+    <let name="led" value="true" />
+    <let name="gpio" value="false" />
     <let name="offboard" value="true" />
-    <let name="camera" value="false" />
+    <let name="camera" value="true" />
 
     <!-- rosbridge server -->
     <include file="$(find-pkg-share rosbridge_server)/launch/rosbridge_websocket_launch.xml" if="$(var rosbridge)">
