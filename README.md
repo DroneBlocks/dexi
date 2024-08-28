@@ -18,23 +18,44 @@ echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 ```
 
+## SPI
+
+Setup udev rules so you don't need sudo to access SPI
+
+```bash
+sudo sh -c "echo 'SUBSYSTEM==\"spidev\", GROUP=\"spigroup\", MODE=\"0660\"' > /etc/udev/rules.d/50-spi.rules"
+sudo groupadd spigroup
+sudo adduser "$USER” spigroup
+```
+
+Add the following to your /boot/config.txt to enable SPI1:
+```ini
+dtparam=spi=on
+dtoverlay=spi1-1cs
+```
+
+Add the following to the end of the line in /boot/cmdline.txt to increase the SPI buffer size:
+```ini
+spidev.bufsiz=32768
+```
+
 # Create the workspace for development
 
 Create a workspace, clone the DEXI repo into it, and run a colcon build:
 
 ```bash
 mkdir -p ~/dexi_ws/src
-
 cd ~/dexi_ws/src
 
 git clone -b develop https://github.com/DroneBlocks/dexi.git
 
 git submodule update --init --remote --recursive
 
+# Install packages for led strips
+pip3 install adafruit-circuitpython-neopixel-spi adafruit-circuitpython-led-animation
+
 cd ..
-
 rosdep install --from-paths src -y --ignore-src
-
 colcon build --symlink-install
 ```
 

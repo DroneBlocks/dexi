@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>dexi_led_strip</name>
+  <version>0.0.0</version>
+  <description>A simple node to control the led strip on the DEXI drone using SPI_1 on the CM4</description>
+  <maintainer email="hunterbaker@me.com">Hunter Baker</maintainer>
+  <license>MIT</license>
+
+  <depend>rclpy</depend>
+  <depend>python-rpi.gpio-pip</depend>
+  <depend>python3-adafruit-blinka-pip</depend>
+
+  <exec_depend>dexi_msgs</exec_depend>
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
