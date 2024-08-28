@@ -1,19 +1,3 @@
 # April Tags
 
-cd ~/dexi_ws
-
-rosdep update
-
-sudo apt update
-
-git clone https://github.com/christianrauch/apriltag_ros ~/dexi_ws/src/apriltag_ros
-
-git clone https://github.com/christianrauch/apriltag_msgs ~/dexi_ws/src/apriltag_msgs
-
-rosdep install --from-paths src -y --rosdistro humble --ignore-src
-
-colcon build --packages-select apriltag_msgs
-
-
-
-colcon build --packages-select apriltag_ros
+April tag detection is disabled by default. To enable the april tag node be sure to modify camera.launch.xml by setting the apriltags var from false to true. Restart the dexi launch file and you will see april tag detection show up on the /detections topic. 
