@@ -34,7 +34,7 @@ class LEDService(Node):
         self.led_pixel_service = self.create_service(LEDPixelColor, '~/set_led_pixel_color', self.set_led_pixel_callback)
         self.led_color_service = self.create_service(LEDRingColor, '~/set_led_ring_color', self.set_led_ring_callback)
         self.pixel_pin = board.D12
-        self.num_pixels = 10
+        self.num_pixels = 45
         self.pixel_order = neopixel.GRB
         self.pixels = neopixel.NeoPixel(self.pixel_pin, self.num_pixels, brightness=0.2, auto_write=False, pixel_order=self.pixel_order)
 
