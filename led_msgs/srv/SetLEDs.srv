@@ -1,6 +1,0 @@
-# This service sets chosen LED colors in a LED strip or other LEDs set
-
-LEDState[] leds
----
-bool success   # True if the call succeeded
-string message # Error or informational message
