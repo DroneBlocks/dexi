@@ -1,7 +1,7 @@
 import rclpy
 from threading import Thread
 from rclpy.node import Node
-from dexi_msgs.srv import Load
+from dexi_interfaces.srv import Load
 
 class Mission(Node):
 

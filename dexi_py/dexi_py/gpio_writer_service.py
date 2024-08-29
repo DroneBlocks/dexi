@@ -3,7 +3,7 @@ import rclpy
 from rclpy.node import Node
 from rclpy.executors import ExternalShutdownException
 import RPi.GPIO as GPIO
-from dexi_msgs.srv import GPIOSend
+from dexi_interfaces.srv import GPIOSend
 
 DEXI_GPIO_PINS = (
     16,
