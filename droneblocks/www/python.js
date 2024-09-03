@@ -102,13 +102,13 @@ function generateROSDefinitions() {
 		code += `set_effect = rospy.ServiceProxy('led/set_effect', SetLEDEffect, persistent=True)\n`;
 	}
 	if (rosDefinitions.setLeds) {
-		Blockly.Python.definitions_['import_set_led'] = 'from led_msgs.srv import SetLED\nfrom led_msgs.msg import LEDState';
+		Blockly.Python.definitions_['import_set_led'] = 'from dexi_interfaces.srv import SetLED\nfrom dexi_interfaces.msg import LEDState';
 		code += `set_led = node.create_client(SetLED, '/dexi/set_led')`;
 		code += `\nwhile not set_led.wait_for_service(timeout_sec=1.0):
 		node.get_logger().info('service not available, waiting again...')`;
 	}
 	if (rosDefinitions.ledStateArray) {
-		Blockly.Python.definitions_['import_led_state_array'] = 'from led_msgs.msg import LEDStateArray';
+		Blockly.Python.definitions_['import_led_state_array'] = 'from dexi_interfaces.msg import LEDStateArray';
 	}
 	if (rosDefinitions.navigateWait) {
 		Blockly.Python.definitions_['import_math'] = 'import math';

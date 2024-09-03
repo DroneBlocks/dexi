@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
-from led_msgs.srv import LEDPixelColor
-from led_msgs.srv import LEDRingColor
+from dexi_interfaces.srv import LEDPixelColor
+from dexi_interfaces.srv import LEDRingColor
 import board
 import neopixel
 from enum import Enum
