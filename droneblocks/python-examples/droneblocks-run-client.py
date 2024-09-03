@@ -17,7 +17,7 @@ class DBRunClient(Node):
   def run_mission(self):
     self.request.code = """
 import rclpy
-from led_msgs.srv import SetLED
+from dexi_interfaces.srv import SetLED
 from time import sleep
 
 node = rclpy.create_node('temp')

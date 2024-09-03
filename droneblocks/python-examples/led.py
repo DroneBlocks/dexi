@@ -1,5 +1,5 @@
 import rclpy
-from led_msgs.srv import SetLED
+from dexi_interfaces.srv import SetLED
 from time import sleep
 
 rclpy.init()
