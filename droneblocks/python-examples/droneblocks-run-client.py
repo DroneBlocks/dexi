@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from time import sleep
-from dexi_msgs.srv import Run
+from dexi_interfaces.srv import Run
 
 
 class DBRunClient(Node):

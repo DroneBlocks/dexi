@@ -18,7 +18,7 @@ Blockly.Python.addReservedWords('pigpio,pi,Range');
 Blockly.Python.addReservedWords('SetLEDEffect,set_effect,led_count,get_led_count');
 Blockly.Python.addReservedWords('SetLEDs,LEDState,set_leds');
 
-const IMPORT_SRV = `from dexi_msgs import srv
+const IMPORT_SRV = `from dexi_interfaces import srv
 from std_srvs.srv import Trigger`;
 
 const NAVIGATE_WAIT = () => `\ndef navigate_wait(x=0, y=0, z=0, speed=0.5, frame_id='body', auto_arm=False):
@@ -98,7 +98,7 @@ function generateROSDefinitions() {
 		code += `land = rospy.ServiceProxy('land', Trigger)\n`;
 	}
 	if (rosDefinitions.setEffect) {
-		Blockly.Python.definitions_['import_led_effect'] = 'from dexi_msgs.srv import SetLEDEffect';
+		Blockly.Python.definitions_['import_led_effect'] = 'from dexi_interfaces.srv import SetLEDEffect';
 		code += `set_effect = rospy.ServiceProxy('led/set_effect', SetLEDEffect, persistent=True)\n`;
 	}
 	if (rosDefinitions.setLeds) {

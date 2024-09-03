@@ -22,8 +22,8 @@ import re
 import uuid
 from std_msgs.msg import Bool, String
 from std_srvs.srv import Trigger
-from dexi_msgs.msg import Prompt
-from dexi_msgs.srv import Run, Load, Store
+from dexi_interfaces.msg import Prompt
+from dexi_interfaces.srv import Run, Load, Store
 
 
 class Stop(Exception):
