@@ -61,6 +61,7 @@ class OffboardControl(Node):
             self.z = self.takeoff_height
         elif command.data == 'land':
             self.offboard_enabled = False
+            self.offboard_setpoint_counter = 0 # Reset for subsequent missions when the drone has changed to land mode
             self.land()
 
     def vehicle_local_position_callback(self, vehicle_local_position):
