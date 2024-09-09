@@ -100,7 +100,7 @@ function update() {
 
 var shownPrompts = new Set();
 
-new ROSLIB.Topic({ ros: ros.ros, name: ros.priv + '/prompt', messageType: 'dexi_msgs/Prompt' }).subscribe(function (msg) {
+new ROSLIB.Topic({ ros: ros.ros, name: ros.priv + '/prompt', messageType: 'dexi_interfaces/Prompt' }).subscribe(function (msg) {
 	if (shownPrompts.has(msg.id)) return;
 	shownPrompts.add(msg.id);
 

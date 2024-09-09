@@ -8,11 +8,10 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(led_msgs REQUIRED)
-find_package(dexi_msgs REQUIRED)
+find_package(dexi_interfaces REQUIRED)
 
 add_executable(led src/led.cpp)
-ament_target_dependencies(led rclcpp led_msgs dexi_msgs)
+ament_target_dependencies(led rclcpp dexi_interfaces)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

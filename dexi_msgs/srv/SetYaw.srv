@@ -1,5 +1,0 @@
-float32 yaw
-string frame_id
----
-bool success
-string message

@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from time import sleep
-from dexi_msgs.srv import Run
+from dexi_interfaces.srv import Run
 
 
 class DBRunClient(Node):
@@ -17,7 +17,7 @@ class DBRunClient(Node):
   def run_mission(self):
     self.request.code = """
 import rclpy
-from led_msgs.srv import SetLED
+from dexi_interfaces.srv import SetLED
 from time import sleep
 
 node = rclpy.create_node('temp')

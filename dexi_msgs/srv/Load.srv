@@ -1,5 +1,0 @@
----
-bool success
-string message
-string[] names
-string[] programs

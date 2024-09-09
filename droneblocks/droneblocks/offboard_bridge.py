@@ -5,7 +5,6 @@ from rclpy.node import Node
 from mavros_msgs.msg import State
 from mavros_msgs.srv import CommandBool, SetMode
 from geometry_msgs.msg import PoseStamped
-from dexi_msgs.srv import Navigate
 from std_msgs.msg import String
 
 STATE_QOS = rclpy.qos.QoSProfile(

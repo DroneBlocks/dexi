@@ -12,3 +12,9 @@
 	path = web_video_server
 	url = https://github.com/RobotWebTools/web_video_server
 	branch = ros2
+[submodule "apriltag_ros"]
+	path = apriltag_ros
+	url = https://github.com/christianrauch/apriltag_ros
+[submodule "dexi_interfaces"]
+	path = dexi_interfaces
+	url = https://github.com/DroneBlocks/dexi_interfaces
