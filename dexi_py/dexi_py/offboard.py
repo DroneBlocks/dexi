@@ -40,7 +40,7 @@ class OffboardControl(Node):
         self.offboard_setpoint_counter = 0
         self.vehicle_local_position = VehicleLocalPosition()
         self.vehicle_status = VehicleStatus()
-        self.takeoff_height = -2.5
+        self.takeoff_height = -1.5
 
         self.x = 0.0
         self.y = 0.0
