@@ -1,0 +1,5 @@
+<launch>
+  <node pkg="dexi_py" exec="led_service" name="led_service" namespace="dexi" />
+  <node pkg="dexi_py" exec="flight_mode_status" name="flight_mode_status" namespace="dexi" />
+  <node pkg="topic_tools" exec="throttle" args="messages /fmu/out/battery_status 1 /throttled/battery_status" />
+</launch>
