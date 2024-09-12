@@ -4,7 +4,7 @@ from std_msgs.msg import String
 from enum import IntEnum
 
 from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy, DurabilityPolicy
-from px4_msgs.msg import VehicleStatus
+from px4_msgs.msg import VehicleStatus, BatteryStatus
 
 import board
 import neopixel
@@ -64,6 +64,8 @@ class LEDFlightModeStatus(Node):
         self.previous_flight_mode = FlightMode.MANUAL
         self.current_flight_mode = FlightMode.MANUAL
         self.pixels = neopixel.NeoPixel(self.pixel_pin, self.num_pixels, brightness=0.2, auto_write=False, pixel_order=self.pixel_order)
+
+        self.low_battery_threshold = 0.25
         
         solid = Solid(self.pixels, color=BLACK)
         solid.animate()
@@ -75,15 +77,23 @@ class LEDFlightModeStatus(Node):
             depth=1
         )
 
-        self.subscription = self.create_subscription(
+        # Get status for determining flight mode
+        self.vehicle_status_subscription = self.create_subscription(
             VehicleStatus,
             '/fmu/out/vehicle_status',
-            self.listener_callback,
+            self.vehicle_status_callback,
+            qos_profile)
+        
+        # Throttled to 1 message/second
+        self.battery_status_subscription = self.create_subscription(
+            BatteryStatus,
+            '/throttled/battery_status',
+            self.battery_status_callback,
             qos_profile)
 
-    def listener_callback(self, msg):
+    def vehicle_status_callback(self, vehicle_status_message):
 
-        self.current_flight_mode = FlightMode(msg.nav_state)
+        self.current_flight_mode = FlightMode(vehicle_status_message.nav_state)
 
         if(self.current_flight_mode != self.previous_flight_mode):
             if self.current_flight_mode == FlightMode.STABILIZED:
@@ -102,6 +112,10 @@ class LEDFlightModeStatus(Node):
 
             self.previous_flight_mode = self.current_flight_mode
 
+    def battery_status_callback(self, battery_status_msg):
+        if (battery_status_msg.remaining < self.low_battery_threshold):
+            solid = Solid(self.pixels, color=RED)
+            solid.animate()
 
 def main(args=None):
     rclpy.init(args=args)
