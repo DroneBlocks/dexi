@@ -1,3 +1,5 @@
 <launch>
-    <node pkg="droneblocks" exec="droneblocks" output="screen" />
+    <node pkg="droneblocks" exec="droneblocks" output="screen">
+        <param name="missions_dir" value="/home/droneblocks/ros2_ws/build/droneblocks/programs" />
+    </node>
 </launch>

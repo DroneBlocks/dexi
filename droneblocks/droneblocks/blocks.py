@@ -60,10 +60,8 @@ class DroneBlocks(Node):
         self.is_mission_running = Bool() # False
         self.running_pub.publish(self.is_mission_running)
 
-        # TODO: somehow get the program path working where the .. causes problems with colcon build --symlink-install --packages-select droneblocks
-        # self.declare_parameter('~/programs_dir', os.path.dirname(os.path.abspath(__file__)) + '../programs')
-        self.declare_parameter('~/programs_dir', '/root/ros2_ws/build/droneblocks/programs')
-        self.programs_path = self.get_parameter('~/programs_dir').value
+        self.declare_parameter('missions_dir', rclpy.Parameter.Type.STRING)
+        self.missions_dir = self.get_parameter('missions_dir').value
         self.name_regexp = re.compile(r'^[a-zA-Z-_.]{0,20}$')
 
     def run(self, request, response):
@@ -163,12 +161,12 @@ class DroneBlocks(Node):
         response.programs = []
         response.success = True
         try:
-            for currentpath, folders, files in os.walk(self.programs_path):
+            for currentpath, folders, files in os.walk(self.missions_dir):
                 for f in files:
                     if not f.endswith('.xml'):
                         continue
                     filename = os.path.join(currentpath, f)
-                    response.names.append(os.path.relpath(filename, self.programs_path))
+                    response.names.append(os.path.relpath(filename, self.missions_dir))
                     response.programs.append(open(filename, 'r').read())
             return response
         except Exception as e:
@@ -181,7 +179,7 @@ class DroneBlocks(Node):
             response.message = 'Bad mission name'
             return response
 
-        filename = os.path.abspath(os.path.join(self.programs_path, request.name))
+        filename = os.path.abspath(os.path.join(self.missions_dir, request.name))
 
         try:
             open(filename, 'w').write(request.program)

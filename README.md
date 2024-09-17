@@ -132,7 +132,7 @@ Mapping port 9090 for rosbridge websocket:
 
 # nginx for DroneBlocks
 
-- docker run -it --rm -d -p 7777:80 --name droneblocks -v ${PWD}/droneblocks/www:/usr/share/nginx/html nginx
+- docker run -it -d -p 7777:80 --name droneblocks --restart always -v ${PWD}/droneblocks/www:/usr/share/nginx/html nginx
 
 # Thanks
 
