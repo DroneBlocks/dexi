@@ -12,6 +12,14 @@ Pin 12 is reserved for LED control
 
 ![GPIO pinout](assets/gpio_pinout.png)
 
+![I2C pinout](assets/i2c_pinout.png)
+
+## Example wiring diagram for 2024 AVR Drone Competition (Laser and Infrared Receiver)
+
+> Dennis apologizes for his kindergarten-level diagramming skills
+
+![AVR Wiring Diagram](assets/avr_laser_receiver_wiring_diagram.png)
+
 ## Launch
 
 ros2 launch dexi_py gpio.launch.yaml
