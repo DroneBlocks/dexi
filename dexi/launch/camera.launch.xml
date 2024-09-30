@@ -1,5 +1,5 @@
 <launch>
-    <let name="apriltags" value="false" />
+    <let name="apriltags" value="true" />
     <let name="cam0" value="true" />
     <let name="cam0_topic" value="cam0" unless="$(var apriltags)" />
     <let name="cam0_topic" value="image_rect" if="$(var apriltags)" />
