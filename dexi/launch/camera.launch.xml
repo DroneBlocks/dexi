@@ -1,5 +1,5 @@
 <launch>
-    <let name="apriltags" value="false" />
+    <let name="apriltags" value="true" />
     <let name="cam0" value="true" />
     <let name="cam0_topic" value="cam0" unless="$(var apriltags)" />
     <let name="cam0_topic" value="image_rect" if="$(var apriltags)" />
@@ -23,4 +23,5 @@
     </node>
     <node pkg="web_video_server" exec="web_video_server" output="screen" />
     <node pkg="apriltag_ros" exec="apriltag_node" output="screen" if="$(var apriltags)" />
+    <node pkg="topic_tools" exec="throttle" args="messages /detections 1 /throttled/detections" />
 </launch>
