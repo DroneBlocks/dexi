@@ -3,7 +3,7 @@
     <let name="droneblocks" value="false" />
     <let name="sitl" value="false" />
     <let name="led" value="true" />
-    <let name="gpio" value="false" />
+    <let name="gpio" value="true" />
     <let name="offboard" value="true" />
     <let name="camera" value="true" />
 
