@@ -5,9 +5,7 @@
 [submodule "px4_msgs"]
 	path = px4_msgs
 	url = https://github.com/PX4/px4_msgs
-[submodule "px4_ros_com"]
-	path = px4_ros_com
-	url = https://github.com/PX4/px4_ros_com
+	branch = release/1.15
 [submodule "web_video_server"]
 	path = web_video_server
 	url = https://github.com/RobotWebTools/web_video_server
