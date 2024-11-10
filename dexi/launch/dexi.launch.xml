@@ -9,7 +9,7 @@
     <!-- ros2 launch dennis_launch_file dexi.launch.xml cam0:=true cam1:=false gpio:=true apriltags:=true -->
     <arg name="cam0" default="true" />
     <arg name="cam1" default="false" />
-    <arg name="gpio" value="false" />
+    <arg name="gpio" default="false" />
     <arg name="apriltags" default="false" />
 
 
