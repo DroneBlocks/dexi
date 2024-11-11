@@ -1,0 +1,12 @@
+[Unit]
+Description="A service to run the DEXI AVR specific launch file at boot"
+
+[Service]
+Type=simple
+User=root
+ExecStart=/home/dexi/dexi_ws/src/dexi/scripts/start_avr.bash
+StandardOutput=syslog
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
