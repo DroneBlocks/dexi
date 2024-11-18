@@ -31,7 +31,7 @@
     <include file="$(find-pkg-share dexi_py)/launch/offboard.launch.xml" if="$(var offboard)" />
 
     <!-- Camera -->
-    <include file="$(find-pkg-share dexi)/launch/camera.launch.xml">
+    <include file="$(find-pkg-share dexi)/launch/camera_composable.launch.py">
         <arg name="enable_cam0" value="$(var cam0)" />
         <arg name="enable_cam1" value="$(var cam1)" />
         <arg name="apriltags" value="$(var apriltags)" />
