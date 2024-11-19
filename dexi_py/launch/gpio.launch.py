@@ -32,6 +32,15 @@ def generate_launch_description():
          package='dexi_py',
          namespace='dexi',
          executable='gpio_reader',
+         name='gpio_input_23',
+         parameters = [
+            {'pin': 23}
+         ]
+      ),
+      Node(
+         package='dexi_py',
+         namespace='dexi',
+         executable='gpio_reader',
          name='gpio_input_24',
          parameters = [
             {'pin': 24}
