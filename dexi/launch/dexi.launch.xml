@@ -4,6 +4,7 @@
     <let name="sitl" value="false" />
     <let name="led" value="true" />
     <let name="gpio" value="true" />
+    <let name="servo" value="true" />
     <let name="offboard" value="true" />
 
     <!-- These can be passed in from command line -->
@@ -27,6 +28,9 @@
 
     <!-- GPIO -->
     <include file="$(find-pkg-share dexi_py)/launch/gpio.launch.py" if="$(var gpio)" />
+
+    <!-- Servo w/ Raspanion -->
+    <include file="$(find-pkg-share dexi_py)/launch/servo.launch.py" if="$(var servo)" />
 
     <!-- Offboard w/ MicroXRCEAgent -->
     <include file="$(find-pkg-share dexi_py)/launch/offboard.launch.xml" if="$(var offboard)" />
