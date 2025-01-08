@@ -15,8 +15,8 @@
         <remap from="~/image_raw" to="$(var cam0_topic)" />
         <remap from="~/camera_info" to="camera_info" />
         <param name="camera" value="0" />
-        <param name="width" value="640" />
-        <param name="height" value="480" />
+        <param name="width" value="320" />
+        <param name="height" value="240" />
         <param name="format" value="XBGR8888" />
     </node>
 
@@ -25,8 +25,8 @@
         <remap from="~/image_raw" to="$(var cam1_topic)" />
         <remap from="~/camera_info" to="camera_info" />
         <param name="camera" value="1" />
-        <param name="width" value="640" />
-        <param name="height" value="480" />
+        <param name="width" value="320" />
+        <param name="height" value="240" />
         <param name="format" value="XBGR8888" />
     </node>
 
