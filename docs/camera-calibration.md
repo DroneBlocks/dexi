@@ -24,13 +24,19 @@ For Pi cam v2 and v2.1 make sure to have your pi /boot/firmware/config.txt prope
 start_x=1
 ```
 
-Then run:
+[For Arducam IMX519 16MP](https://www.amazon.com/dp/B0C53BBMLG) which we are testing with Raspanion:
 
 ```
-ros2 run cv_camera cv_camera_node --ros-args -r __ns:=/camera
+dtoverlay=arducam-pivariety
+dtoverlay=imx519
+dtoverlay=imx519,cam0
 ```
 
-This is from: https://github.com/Kapernikov/cv_camera
+Now you can run:
+
+```
+ros2 run camera_ros camera_node --ros-args -p format:=RGB888 -p width:=640 -p height:=480
+```
 
 The namespace of /camera is important so that on the laptop/desktop it finds the /camera/image_raw topic and we can do the calibration.
 
@@ -43,7 +49,7 @@ sudo apt install ros-humble-camera-calibration
 Now run:
 
 ```
-ros2 run camera_calibration cameracalibrator --size 7x9 --square 0.015 --ros-args -r image:=/image_raw
+ros2 run camera_calibration cameracalibrator --size 7x9 --square 0.015 --ros-args -r image:=/camera/image_raw
 ```
 
 Move your board around the camera and wait for all sliders to turn green as shown below.
