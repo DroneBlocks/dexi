@@ -17,7 +17,7 @@
         <param name="camera" value="0" />
         <param name="width" value="320" />
         <param name="height" value="240" />
-        <param name="format" value="XBGR8888" />
+        <param name="format" value="RGB888" />
     </node>
 
     <!-- Camera 1 node -->
@@ -27,7 +27,7 @@
         <param name="camera" value="1" />
         <param name="width" value="320" />
         <param name="height" value="240" />
-        <param name="format" value="XBGR8888" />
+        <param name="format" value="RGB888" />
     </node>
 
     <!-- Web video server node -->
