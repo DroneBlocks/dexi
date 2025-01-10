@@ -2,7 +2,7 @@
     <!-- Accept arguments from the parent launch file -->
     <arg name="enable_cam0" default="true" />
     <arg name="enable_cam1" default="false" />
-    <arg name="apriltags" default="true" />
+    <arg name="apriltags" default="false" />
 
     <!-- Determine topics based on apriltags argument -->
     <let name="cam0_topic" value="cam0" unless="$(var apriltags)" />

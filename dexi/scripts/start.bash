@@ -3,4 +3,4 @@
 source /opt/ros/humble/setup.bash
 source /home/dexi/dexi_ws/install/setup.bash
 
-/opt/ros/humble/bin/ros2 launch dexi dexi.launch.xml
+/opt/ros/humble/bin/ros2 launch dexi dexi.launch.xml apriltags:=true
