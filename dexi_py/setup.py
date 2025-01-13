@@ -29,7 +29,11 @@ setup(
             'led_mock_service = dexi_py.led_mock:main',
             'flight_mode_status = dexi_py.led_flight_mode_status:main',
             'gpio_writer_service = dexi_py.gpio_writer_service:main',
-            'gpio_reader = dexi_py.gpio_reader:main'
+            'gpio_reader = dexi_py.gpio_reader:main',
+            'servo_controller = dexi_py.servo_controller:main',
+            'current_yaw = dexi_py.current_yaw:main',
+            'circular_trajectory = dexi_py.circular_trajectory:main',
+            'yaw_in_place = dexi_py.yaw_in_place:main'
         ],
     },
 )
