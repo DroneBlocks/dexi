@@ -11,9 +11,9 @@ from threading import Thread
 from pysm import State, StateMachine, Event
 from queue import Queue
 from enum import Enum
-from .timer import Timer
+from .utils.timer import Timer
 
-class PX4Demo(Node):
+class PX4OffboardManager(Node):
     def __init__(self):
         ####################### R O S  N O D E  S E T U P ############################
         super().__init__('px4_offboard_manager') #type: ignore
@@ -416,15 +416,15 @@ class PX4Demo(Node):
 def main(args=None):
     rclpy.init(args=args)
     try:
-        px4_demo = PX4Demo()
-        rclpy.spin(px4_demo)
+        px4_offboard_manager = PX4OffboardManager()
+        rclpy.spin(px4_offboard_manager)
     except KeyboardInterrupt:
         pass
     except ExternalShutdownException:
         # Destroy the node explicitly
         # (optional - otherwise it will be done automatically
         # when the garbage collector destroys the node object)
-        px4_demo.destroy_node()
+        px4_offboard_manager.destroy_node()
         rclpy.shutdown()
         sys.exit(1)
 
