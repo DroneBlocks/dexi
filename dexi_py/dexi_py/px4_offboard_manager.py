@@ -60,11 +60,11 @@ class PX4OffboardManager(Node):
         self.offboard_heartbeat_thread = Thread(target=self.send_offboard_heartbeat, args=())
         self.offboard_heartbeat_thread.daemon = True
         self.offboard_heartbeat_thread_run_flag = False
-        self.offboard_heartbeat_thread.start()
+        #self.offboard_heartbeat_thread.start()
 
         self.offboard_timer = Timer()
-        self.offboard_timer.set_timeout(1)
-        self.offboard_timer.function = self.enable_offboard_mode
+        #self.offboard_timer.set_timeout(1)
+        #self.offboard_timer.function = self.enable_offboard_mode
 
 
         ###############################################################################
@@ -242,11 +242,20 @@ class PX4OffboardManager(Node):
                 'fly_right', 'fly_up', 'fly_down', 'yaw_left', 'yaw_right'
             ]:
                 command_method(distance_or_degrees)
-            else: # Arm, Land and other cases with no distance
+            else: # 'start_offboard', 'stop_offboard', 'arm', 'land' and other cases with no distance
                 command_method()
         else:
             self.get_logger().warn(f"Command '{msg.command}' is not recognized.")
+    
+    def stop_offboard(self):
+        self.offboard_heartbeat_thread_run_flag = False
+        self.offboard_timer.stop()
 
+    def start_offboard(self):
+        self.offboard_heartbeat_thread_run_flag = True
+        self.offboard_heartbeat_thread.start()
+        self.offboard_timer.set_timeout(1)
+        self.offboard_timer.function = self.enable_offboard_mode
     ###################################################################################
 
     ########################### P X 4  R O S  M E T H O D S ###########################

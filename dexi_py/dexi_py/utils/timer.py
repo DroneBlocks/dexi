@@ -11,8 +11,8 @@ class Timer(object):
         self.start_time = 0
         self.end_time = 0
 
-        thread = Thread(target=self.run, args=tuple())
-        thread.start()
+        self.thread = Thread(target=self.run, args=tuple())
+        self.thread.start()
         # print("started timer thread!!!")
 
     def start(self):
@@ -39,6 +39,12 @@ class Timer(object):
     def get_remaining_time(self):
         remaining = self.end_time - time.time()
         return remaining if remaining > 0 else 0
+    
+    def stop(self):
+        """Stops the timer and exits the thread."""
+        self.enabled = False
+        if self.thread.is_alive():
+            self.thread.join()  # Wait for the thread to terminate
 
     def run(self):
         # print("started run func!")
