@@ -248,10 +248,12 @@ class PX4OffboardManager(Node):
             self.get_logger().warn(f"Command '{msg.command}' is not recognized.")
     
     def stop_offboard(self):
+        self.get_logger().info('stopping offboard')
         self.offboard_heartbeat_thread_run_flag = False
         self.offboard_timer.stop()
 
     def start_offboard(self):
+        self.get_logger().info('starting offboard')
         self.offboard_heartbeat_thread_run_flag = True
         self.offboard_heartbeat_thread.start()
         self.offboard_timer.set_timeout(1)
