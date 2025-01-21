@@ -28,16 +28,22 @@ class TakeoffAndLand(Node):
         # Local position coordinates
         self.altitude = 0.00
 
+        # Sleep 5 seconds before arming
         time.sleep(5.0)
 
+        # Arm the drone
         self.arm()
 
+        # Sleep for 1 second
         time.sleep(1.0)
 
-        self.takeoff(5.0)
+        # Takeoff to 3 meters AGL
+        self.takeoff(3.0)
 
+        # Sleep for 10 seconds
         time.sleep(10.0)
 
+        # Land
         self.land()
 
     # Send arm command to get motors spinning
