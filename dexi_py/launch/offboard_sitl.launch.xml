@@ -1,0 +1,3 @@
+<launch>
+  <node pkg="dexi_py" exec="px4_offboard_manager" name="px4_offboard_manager" namespace="dexi" />
+</launch>
