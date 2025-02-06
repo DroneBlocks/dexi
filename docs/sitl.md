@@ -32,7 +32,7 @@ This volume mapping also has the benefit of your changes not being deleted when 
 
 ### 3. Web Access
 
-Your container is now accessible directly via web browser! Go to https://localhost:6080 to access it.
+Your container is now accessible directly via web browser! Go to http://localhost:6080 to access it.
 
 ### 4. Run SITL
 
