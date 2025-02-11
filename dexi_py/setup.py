@@ -25,6 +25,7 @@ setup(
     entry_points={
         'console_scripts': [
             'led_service = dexi_py.led_service:main',
+            'led_simulation_service = dexi_py.led_simulation_service:main',
             'led_mock_service = dexi_py.led_mock:main',
             'flight_mode_status = dexi_py.led_flight_mode_status:main',
             'gpio_writer_service = dexi_py.gpio_writer_service:main',

@@ -7,7 +7,7 @@
     <let name="offboard" value="true" />
 
     <!-- These can be passed in from command line -->
-    <!-- ros2 launch dennis_launch_file dexi.launch.xml cam0:=true cam1:=false gpio:=true apriltags:=true -->
+    <!-- ros2 launch dexi dexi.launch.xml cam0:=true cam1:=false gpio:=true apriltags:=true -->
     <arg name="cam0" default="true" />
     <arg name="cam1" default="false" />
     <arg name="gpio" default="false" />
@@ -23,7 +23,7 @@
     <include file="$(find-pkg-share droneblocks)/launch/droneblocks.launch.xml" if="$(var droneblocks)" />
 
     <!-- LED -->
-    <include file="$(find-pkg-share dexi_py)/launch/led.launch.yaml" if="$(var led)" />
+    <include file="$(find-pkg-share dexi_py)/launch/led.launch.py" if="$(var led)" />
 
     <!-- GPIO -->
     <include file="$(find-pkg-share dexi_py)/launch/gpio.launch.py" if="$(var gpio)" />
@@ -37,10 +37,4 @@
         <arg name="enable_cam1" value="$(var cam1)" />
         <arg name="apriltags" value="$(var apriltags)" />
     </include>
-
-    <!-- MAVROS w/ SITL -->
-    <!-- <include file="$(find-pkg-share dexi)/launch/mavros_sitl.launch.xml" if="$(var sitl)" /> -->
-    
-    <!-- MAVROS w/ Pixhawk-->
-    <!-- <include file="$(find-pkg-share dexi)/launch/mavros.launch.xml" unless="$(var sitl)" /> -->
 </launch>
