@@ -33,7 +33,7 @@ colcon build --packages-select px4_msgs
 This may take a few minutes so please be patient. After the build is complete we need to "source" the workspace to access what we just built:
 
 ```
-source ~/dexi_ws/install/setup.bash
+source /dexi_ws/install/setup.bash
 ```
 
 Now double-check one of the message types to make sure everything was built correctly:
