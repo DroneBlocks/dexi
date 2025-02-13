@@ -59,3 +59,7 @@ After a few moments you will see a drone loaded into the Gazebo simulation envir
 ### 5. Connect QGroundControl
 
 Open QGC on your desktop machine and it should automatically connect to PX4 SITL running in Docker. Tada! Play around with your simulated drone in QGC.
+
+### 6. Give PX4 Offboard Control a Try
+
+PX4 Offboard for DEXI [can be found here](offboard.md).
