@@ -18,12 +18,12 @@ cd ~/Desktop/dexi
 
 For arm64:
 ```
-docker run -p 6080:80 --security-opt seccomp=unconfined -v ${PWD}:/dexi_ws/src/ --name dexi-dev --shm-size=512m droneblocks/dexi-px4-sitl-arm64:1.15
+docker run -p 6080:80 --security-opt seccomp=unconfined -v ${PWD}:/home/ubuntu/dexi_ws/src/ --name dexi-dev --shm-size=512m droneblocks/dexi-px4-sitl-arm64:1.15
 ```
 
 For amd64:
 ```
-docker run -p 6080:80 --security-opt seccomp=unconfined -v ${PWD}:/dexi_ws/src/ --name dexi-dev --shm-size=512m droneblocks/dexi-px4-sitl-amd64:1.15
+docker run -p 6080:80 --security-opt seccomp=unconfined -v ${PWD}:/home/ubuntu/dexi_ws/src/ --name dexi-dev --shm-size=512m droneblocks/dexi-px4-sitl-amd64:1.15
 ```
 
 Pay attention to the -v argument that handles mapping the cloned dexi repo into the /dexi_ws/src folder inside the container. This enables us to make changes on the host using VS Code and those changes will be available inside the container.
