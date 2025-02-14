@@ -3,9 +3,8 @@ import time
 import math
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy, DurabilityPolicy
-from px4_msgs.msg import OffboardControlMode, TrajectorySetpoint, VehicleLocalPosition, VehicleGlobalPosition, VehicleCommand
+from px4_msgs.msg import VehicleGlobalPosition, VehicleCommand
 from threading import Thread
-from dexi_interfaces.msg import OffboardNavCommand
 
 class TakeoffAndLand(Node):
     def __init__(self):
