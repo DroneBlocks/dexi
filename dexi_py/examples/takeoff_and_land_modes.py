@@ -36,14 +36,23 @@ class TakeoffAndLand(Node):
         # Sleep for 1 second
         time.sleep(1.0)
 
-        # Takeoff to 3 meters AGL
-        self.takeoff(3.0)
+        # Takeoff to 2 meters AGL
+        self.takeoff(2.0)
 
         # Sleep for 10 seconds
         time.sleep(10.0)
 
         # Land
         self.land()
+
+        # Give it time to land
+        time.sleep(10.0)
+
+        # Shutdown the node after landing
+        self.get_logger().info('Landing complete. Shutting down...')
+        self.destroy_node()
+        rclpy.shutdown()
+        exit(0)
 
     # Send arm command to get motors spinning
     def arm(self):
@@ -111,7 +120,6 @@ def main(args=None):
     except KeyboardInterrupt:
         pass
     finally:
-        node.offboard_heartbeat_thread_run_flag = False
         node.destroy_node()
         rclpy.shutdown()
 
