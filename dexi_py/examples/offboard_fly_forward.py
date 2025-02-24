@@ -36,7 +36,7 @@ class OffboardFlyForward(Node):
         self.vehicle_global_pos_subscriber = self.create_subscription(VehicleGlobalPosition, "/fmu/out/vehicle_global_position", self.vehicle_global_pos_callback, qos_profile)
 
         # Subscriber listening for offboard navigation commands
-        self.offboard_manager = self.create_subscription(String, "offboard_manager", self.launch_mission, qos_profile)
+        self.offboard_manager = self.create_subscription(String, "/dexi/offboard_manager", self.launch_mission, qos_profile)
 
         # Create a thread to publish the heartbeat signal
         self.offboard_heartbeat_thread = Thread(target=self.send_offboard_heartbeat, args=())
@@ -165,7 +165,7 @@ class OffboardFlyForward(Node):
             threading.Thread(target=lambda: (
             self.arm(),
             time.sleep(1),
-            self.takeoff(5),
+            self.takeoff(2),
             time.sleep(10),
             self.enable_offboard_mode(),
             time.sleep(1),

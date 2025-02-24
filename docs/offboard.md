@@ -110,31 +110,39 @@ python3 takeoff_and_land_modes.py
 
 You can observe your drone takeoff, hover for 10 seconds 2m above ground, and land. Feel free to review amd modify the script to gain a better understanding of how flight modes can be triggered programmatically.
 
-##
-From the root of your ROS2 workspace:
+## Offboard Fly Forward
+
+In the same terminal as above (or a new one with your worspace sourced) do the following:
 
 ```
-colcon build --packages-select px4_msgs
-colcon build --packages-select microxrcedds_agent
+cd ~/dexi_ws
 ```
 
-## Start
-
-Make sure PX4 SITL is running on the host:
+and build the following packages:
 
 ```
-cd ~/PX4-Autopilot
-make px4_sitl gz_x500
+colcon build --packages-select dexi_py
 ```
 
-This should start the microdds client in SITL.
+This assumes you've followed the instructions above and have already built px4_msgs and dexi_interfaces. If not then you should run:
 
-Now launch the offboard nodes:
+```
+colcon build --packages-select px4_msgs dexi_interfaces dexi_py
+```
+
+After building a new package you will need to source your workspace:
 
 ```
 source install/setup.bash
-ros2 launch dexi_py offboard.launch.xml
 ```
+
+Now we are going to something a little different than previous examples. We are going to launch a ROS2 node and then publish a message to command our drone to takeoff, fly forward, and then land.
+
+```
+ros2 topic pub /dexi/offboard_manager std_msgs/String "data: 'launch'" -1
+```
+
+
 
 ## Command Line
 ```
