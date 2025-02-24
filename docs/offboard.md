@@ -92,11 +92,23 @@ ros2 topic echo /fmu/out/vehicle_status
 
 You will see data from PX4 SITL being printed to the screen. 
 
-## Takeoff and land test
+## Takeoff and Land Test
 
-Open QGC and try to switch to offboard mode 
+While the takeoff and land example doesn't make use off offboard control, it's still a great example of how to programmatically change into discrete flight modes such as Takeoff mode and Land mode.
 
+Make sure PX4 SITL and the MicroXRCEAgent are running as previously discussed. Now open a new terminal (or use a previous terminal), make sure you've sourced your environment so that px4_msgs are loaded, and navigate to:
 
+```
+cd ~/dexi_ws/src/dexi_py/examples
+```
+
+and run:
+
+```
+python3 takeoff_and_land_modes.py
+```
+
+You can observe your drone takeoff, hover for 10 seconds 2m above ground, and land. Feel free to review amd modify the script to gain a better understanding of how flight modes can be triggered programmatically.
 
 ##
 From the root of your ROS2 workspace:
