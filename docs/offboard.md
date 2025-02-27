@@ -112,6 +112,50 @@ You can observe your drone takeoff, hover for 10 seconds 2m above ground, and la
 
 ## Offboard Fly Forward
 
+Now we are going to do something a little different than in previous examples. We are going to launch a ROS2 node and then publish a message to command our drone to takeoff, fly forward, and land.
+
+```
+cd ~/dexi_ws/src/dexi_py/examples
+```
+
+And then we'll run the node:
+
+```
+python3 offboard_fly_forward.py
+```
+
+Open a new terminal and run:
+
+```
+ros2 topic list
+```
+
+You'll see the node creates a subcriber waiting for messages at:
+
+```
+/dexi/offboard_manager
+```
+
+Let's also take a look and verify that the node is publishing a heartbeat message to /fmu/in/offboard_control_mode:
+
+```
+ros2 topic echo /fmu/in/offboard_control_mode
+```
+
+You'll see messages being published to this topic at 10Hz.
+
+Now let's send a "launch" message and watch the magic begin:
+
+```
+ros2 topic pub /dexi/offboard_manager std_msgs/String "data: 'launch'" -1
+```
+
+The drone will takeoff, switch to offboard mode, fly forward 20m, and then land. The node will still be running so go ahead and publish the message again to repeat the behavior.
+
+Feel free to kill the node, modify code, run it again and observe the results.
+
+## Full Offboard Control
+
 In the same terminal as above (or a new one with your worspace sourced) do the following:
 
 ```
@@ -135,14 +179,6 @@ After building a new package you will need to source your workspace:
 ```
 source install/setup.bash
 ```
-
-Now we are going to something a little different than previous examples. We are going to launch a ROS2 node and then publish a message to command our drone to takeoff, fly forward, and then land.
-
-```
-ros2 topic pub /dexi/offboard_manager std_msgs/String "data: 'launch'" -1
-```
-
-
 
 ## Command Line
 ```
