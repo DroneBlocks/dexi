@@ -6,10 +6,6 @@
 	path = px4_msgs
 	url = https://github.com/PX4/px4_msgs
 	branch = release/1.15
-[submodule "web_video_server"]
-	path = web_video_server
-	url = https://github.com/RobotWebTools/web_video_server
-	branch = ros2
 [submodule "apriltag_ros"]
 	path = apriltag_ros
 	url = https://github.com/christianrauch/apriltag_ros
