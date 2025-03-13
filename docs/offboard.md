@@ -154,30 +154,64 @@ The drone will takeoff, switch to offboard mode, fly forward 20m, and then land.
 
 Feel free to kill the node, modify code, run it again and observe the results.
 
-## Full Offboard Control
+## Offboard Navigation
 
-In the same terminal as above (or a new one with your worspace sourced) do the following:
+The final step in our offboard journey is to launch the SITL offboard node. This node includes several commands to allow for full navigation of both the SITL and DEXI drones.
 
-```
-cd ~/dexi_ws
-```
-
-and build the following packages:
+We will need to build one more package given that we have already built px4_msgs and dexi_interfaces. This package is called dexi_py and contains the px4_offboard_manager node. From the ~/dexi_ws folder run the following:
 
 ```
 colcon build --packages-select dexi_py
 ```
 
-This assumes you've followed the instructions above and have already built px4_msgs and dexi_interfaces. If not then you should run:
-
-```
-colcon build --packages-select px4_msgs dexi_interfaces dexi_py
-```
-
-After building a new package you will need to source your workspace:
+and source your workspace:
 
 ```
 source install/setup.bash
+```
+
+Make sure your PX4 SITL is running and this time you don't need to worry about starting the MicroXRCEAgent process because this will be taken care of by the ROS2 launch file:
+
+```
+ros2 launch dexi_py offboard_sitl.launch.py
+```
+
+Open a new terminal and run:
+
+```
+ros2 node list
+```
+
+You will see the /dexi/px4_offboard_node running.
+
+Now run:
+
+```
+ros2 topic list
+```
+
+You will see the /dexi/offboard_manager subscriber that is now waiting for us to send commands.
+
+Talk about OffboardNavCommand
+
+QGC switch to offboard while on the ground. Red status.
+
+Now send heartbeat
+
+```
+ros2 topic pub /dexi/offboard_manager dexi_interfaces/msg/OffboardNavCommand "{command: 'start_offboard_heartbeat'}" -1
+```
+
+```
+ros2 topic pub /dexi/offboard_manager dexi_interfaces/msg/OffboardNavCommand "{command: 'takeoff', distance_or_degrees: 2}" -1
+```
+
+```
+ros2 topic pub /dexi/offboard_manager dexi_interfaces/msg/OffboardNavCommand "{command: 'arm'}" -1
+```
+
+```
+ros2 topic pub /dexi/offboard_manager dexi_interfaces/msg/OffboardNavCommand "{command: 'fly_forward', distance_or_degrees: 5}" -1
 ```
 
 ## Command Line
