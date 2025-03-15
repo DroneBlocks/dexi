@@ -16,8 +16,8 @@ class OffboardBoxMission(Node):
             depth=1
         )
 
-        self.altitude = 2
-        self.distance = 3
+        self.altitude = 2.0
+        self.distance = 3.0
 
         self.offboard_control_publisher = self.create_publisher(OffboardNavCommand, '/dexi/offboard_manager', qos_profile)
 
