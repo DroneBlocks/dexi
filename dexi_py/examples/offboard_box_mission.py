@@ -16,17 +16,12 @@ class OffboardBoxMission(Node):
             depth=1
         )
 
-        self.altitude = 2.0
-        self.distance = 3.0
+        self.altitude = 1.5
+        self.distance = 2.0
 
         self.offboard_control_publisher = self.create_publisher(OffboardNavCommand, '/dexi/offboard_manager', qos_profile)
 
-        time.sleep(3)
-        self.start_offboard_heartbeat()
-        time.sleep(1)
-        self.arm()
-        time.sleep(1)
-        self.takeoff()
+        self.box_mission()
 
     def start_offboard_heartbeat(self):
         msg = OffboardNavCommand()
@@ -68,22 +63,51 @@ class OffboardBoxMission(Node):
         msg.distance_or_degrees = self.distance
         self.offboard_control_publisher.publish(msg)
 
+    def land(self):
+        msg = OffboardNavCommand()
+        msg.command = "land"
+        self.offboard_control_publisher.publish(msg)
+
     def stop_offboard_heartbeat(self):
         msg = OffboardNavCommand()
         msg.command = "stop_offboard_heartbeat"
         self.offboard_control_publisher.publish(msg)
 
+    def box_mission(self):
+        time.sleep(3)
+        self.start_offboard_heartbeat()
+
+        time.sleep(1)
+        self.arm()
+
+        time.sleep(1)
+        self.takeoff()
+
+        # Give drone enough time to takeoff and settle
+        time.sleep(10)
+        self.fly_forward()
+
+        time.sleep(5)
+        self.fly_right()
+
+        time.sleep(5)
+        self.fly_backward()
+
+        time.sleep(5)
+        self.fly_left()
+
+        time.sleep(5)
+        self.land()
+
+        time.sleep(5)
+        self.stop_offboard_heartbeat()
+
 def main(args=None):
     rclpy.init(args=args)
     node = OffboardBoxMission()
     
-    try:
-        rclpy.spin(node)
-    except KeyboardInterrupt:
-        pass
-    finally:
-        node.destroy_node()
-        rclpy.shutdown()
+    node.destroy_node()
+    rclpy.shutdown()
 
 if __name__ == '__main__':
     main()
