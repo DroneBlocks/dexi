@@ -55,18 +55,12 @@ class PX4OffboardManager(Node):
         self.heading = 0.00
 
         self.offboard_heartbeat = OffboardControlMode()
-        self.offboard_heartbeat.position=True
+        self.offboard_heartbeat.position = True
 
-        self.offboard_heartbeat_thread = Thread(target=self.send_offboard_heartbeat, args=())
-        self.offboard_heartbeat_thread.daemon = True
+        self.offboard_heartbeat_thread = None
         self.offboard_heartbeat_thread_run_flag = False
-        #self.offboard_heartbeat_thread.start()
 
         self.offboard_timer = Timer()
-        #self.offboard_timer.set_timeout(1)
-        #self.offboard_timer.function = self.enable_offboard_mode
-
-
         ###############################################################################
 
         #################### S T A T E  M A C H I N E  S E T U P ######################
@@ -228,8 +222,9 @@ class PX4OffboardManager(Node):
         self.heading = msg.heading
         # self.get_logger().info(f"Lat: {self.lat} Lon: {self.lon} Alt: {self.alt}")
 
-    # Receive messages published to /offboard_manager
+    # Receive messages published to /dexi/offboard_manager
     def handle_offboard_command(self, msg: OffboardNavCommand):
+        self.get_logger().info(f"Received command: {msg.command}")
         distance_or_degrees = msg.distance_or_degrees or 1
         
         # Dynamically call the method if it exists
@@ -248,15 +243,37 @@ class PX4OffboardManager(Node):
             self.get_logger().warn(f"Command '{msg.command}' is not recognized.")
 
     def start_offboard_heartbeat(self):
+        self.get_logger().info('start')
+        if self.offboard_heartbeat_thread_run_flag:
+            return
+
         self.get_logger().info('starting offboard heartbeat')
         self.offboard_heartbeat_thread_run_flag = True
+
+        # Ensure any old thread is fully stopped before creating a new one
+        if self.offboard_heartbeat_thread and self.offboard_heartbeat_thread.is_alive():
+            self.offboard_heartbeat_thread.join()
+
+        self.offboard_heartbeat_thread = Thread(target=self.send_offboard_heartbeat, daemon=True)
         self.offboard_heartbeat_thread.start()
+
         self.offboard_timer.set_timeout(1)
         self.offboard_timer.function = self.enable_offboard_mode
 
     def stop_offboard_heartbeat(self):
+        if not self.offboard_heartbeat_thread_run_flag:
+            return
+
         self.get_logger().info('stopping offboard heartbeat')
-        self.offboard_heartbeat_thread_run_flag = False
+        self.offboard_heartbeat_thread_run_flag = False  # Signal thread to exit
+
+        if self.offboard_heartbeat_thread and self.offboard_heartbeat_thread.is_alive():
+            try:
+                self.offboard_heartbeat_thread.join(timeout=1)
+            except Exception as e:
+                self.get_logger().error(f"Exception while joining thread: {e}")
+
+        self.offboard_heartbeat_thread = None
         self.offboard_timer.stop()
     ###################################################################################
 
@@ -352,10 +369,11 @@ class PX4OffboardManager(Node):
         self.send_vehicle_command(msg)
 
     def send_offboard_heartbeat(self):
-        while True:
-            if self.offboard_heartbeat_thread_run_flag == True:
-                self.vehicle_offboard_mode_publisher.publish(self.offboard_heartbeat)
+        while self.offboard_heartbeat_thread_run_flag:
+            self.vehicle_offboard_mode_publisher.publish(self.offboard_heartbeat)
             time.sleep(1/20)
+
+        self.get_logger().info("Heartbeat thread exiting cleanly")
 
     def send_trajectory_setpoint_position(self, x, y , z, yaw = None):
         msg = TrajectorySetpoint()
