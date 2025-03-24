@@ -68,6 +68,12 @@ class LEDFlightModeStatus(Node):
             elif self.current_flight_mode == FlightMode.POSITION:
                 solid = Solid(self.pixels, color=GREEN)
                 solid.animate()
+            elif self.current_flight_mode == FlightMode.OFFBOARD:
+                solid = Solid(self.pixels, color=PURPLE)
+                solid.animate()
+            elif self.current_flight_mode == FlightMode.TAKEOFF:
+                solid = Solid(self.pixels, color=BLUE)
+                solid.animate()
             else:
                 self.get_logger().info('FLIGHT MODE COLOR NOT YET SUPPORTED')
                 solid = Solid(self.pixels, color=BLACK)
