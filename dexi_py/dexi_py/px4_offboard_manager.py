@@ -148,7 +148,6 @@ class PX4OffboardManager(Node):
     #################### S T A T E  M A C H I N E  M E T H O D S ######################
     def disarm_enter(self, state, event):
         self.offboard_heartbeat_thread_run_flag = False
-        self.enable_hold_mode()
 
     def arm_enter(self, state, event):
         # self.takeoff(5)
