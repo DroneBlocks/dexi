@@ -1,0 +1,41 @@
+repositories:
+
+  apriltag:
+    type: git
+    url: https://github.com/AprilRobotics/apriltag
+    version: master
+
+  apriltag_ros:
+    type: git
+    url: https://github.com/christianrauch/apriltag_ros
+    version: master
+
+  apriltag_msgs:
+    type: git
+    url: https://github.com/christianrauch/apriltag_msgs
+    version: master
+
+  async_web_server_cpp:
+    type: git
+    url: https://github.com/fkie/async_web_server_cpp
+    version: ros2-develop
+
+  vision_opencv:
+    type: git
+    url: https://github.com/ros-perception/vision_opencv
+    version: rolling
+
+  web_video_server:
+    type: git
+    url: https://github.com/RobotWebTools/web_video_server
+    version: ros2
+
+  camera_ros:
+    type: git
+    url: https://github.com/christianrauch/camera_ros
+    version: main
+
+  rosbridge:
+    type: git
+    url: https://github.com/RobotWebTools/rosbridge_suite
+    version: ros2
