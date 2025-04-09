@@ -1,5 +1,15 @@
 repositories:
 
+  dexi_led:
+    type: git
+    url: https://github.com/DroneBlocks/dexi_led
+    version: main
+
+  dexi_interfaces:
+    type: git
+    url: https://github.com/DroneBlocks/dexi_interfaces
+    version: main
+
   apriltag:
     type: git
     url: https://github.com/AprilRobotics/apriltag
