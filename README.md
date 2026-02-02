@@ -1,3 +1,16 @@
+> **⚠️ DEPRECATION NOTICE**
+> 
+> This repository is legacy and is no longer actively maintained. For the latest DEXI drone development, please use:
+> 
+> - **[dexi-sim-ftw](https://github.com/DroneBlocks/dexi-sim-ftw)** - Complete PX4 simulator with ROS2, Node-RED, Unity, and Docker
+> - **[dexi-os](https://github.com/DroneBlocks/dexi-os)** - Image builder for DEXI drone software
+> - **[node-red-dexi](https://github.com/DroneBlocks/node-red-dexi)** - Node-RED nodes for DEXI development
+> - **Individual ROS2 packages:** dexi_interfaces, dexi_offboard, dexi_bringup, dexi_led, dexi_camera, etc.
+> 
+> The open issues in this repo are for historical/planning purposes. New development should use the repos above.
+
+---
+
 # Setup ROS2
 
 ```bash
