@@ -18,13 +18,22 @@ That means three routes, all equivalent once you're at the `nsh>` prompt:
 
 ---
 
+## Connecting to the drone
+
+The drone broadcasts its own Wi-Fi access point, named after its hostname
+(`dexi-XXXX`). Join that network and the drone is always reachable at **`192.168.4.1`**
+— a fixed address, unaffected by DHCP.
+
+If instead the drone has joined an existing network, use `dexi-XXXX.local` and
+substitute that for `192.168.4.1` throughout.
+
 ## Route 1 — On the drone, via SSH
 
 The onboard `mavlink-router` already exposes the FC's MAVLink stream on UDP `14550`.
 Nothing needs to be stopped: ROS 2, `mavlink2rest` and QGroundControl can all stay up.
 
 ```bash
-ssh dexi@dexi-XXXX.local          # password: dexi
+ssh dexi@192.168.4.1          # password: dexi
 
 curl -sfL -o ~/mavlink_shell.py \
   https://raw.githubusercontent.com/PX4/PX4-Autopilot/main/Tools/mavlink_shell.py
@@ -34,16 +43,17 @@ python3 ~/mavlink_shell.py udpout:127.0.0.1:14550
 
 You land at an `nsh>` prompt. Exit with **Ctrl-D**.
 
-`pymavlink` is preinstalled on DEXI-OS, so there is no `pip` step.
+Note the loopback address: `mavlink_shell.py` is running *on* the drone, so it connects
+to the router locally. `pymavlink` is preinstalled on DEXI-OS, so there is no `pip` step.
 
 ## Route 2 — From your computer, over the network
 
 `mavlink-router` binds `0.0.0.0`, so the same UDP endpoint is reachable from any host
-on the network. Substitute the drone's hostname:
+that can see the drone — including over its access point:
 
 ```bash
 pip3 install --user pymavlink pyserial
-python3 mavlink_shell.py udpout:dexi-XXXX.local:14550
+python3 mavlink_shell.py udpout:192.168.4.1:14550
 ```
 
 ## Route 3 — Over USB, directly to the flight controller
